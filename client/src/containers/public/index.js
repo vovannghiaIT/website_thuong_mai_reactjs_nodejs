@@ -1,0 +1,12 @@
+export { default as Home } from "./Home";
+export { default as Header } from "./Header";
+export { default as Login } from "./Login";
+export { default as HomePage } from "./HomePage";
+export { default as Footer } from "./Footer";
+export { default as InfoCustomer } from "./InfoCustomer";
+export { default as Address } from "./Address";
+export { default as ReSetPassword } from "./ReSetPassword";
+export { default as ProductDetail } from "./ProductDetail";
+export { default as ProductImagesSlider } from "./ProductImagesSlider";
+export { default as ProductCategory } from "./ProductCategory";
+export { default as Cart } from "./Cart";
