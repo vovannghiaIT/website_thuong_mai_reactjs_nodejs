@@ -14,7 +14,6 @@ const ItemsProduct = ({
   width,
   height,
   slug,
-  key,
   onClick,
 }) => {
   const { products } = useSelector((state) => state.product);
@@ -25,10 +24,9 @@ const ItemsProduct = ({
       {!contextleft && !contextright && (
         <Link
           to={"/productdetail/" + slug}
-          className={`shadow-lg flex gap-2 flex-col p-2  bg-white rounded-md overflow-hidden cursor-pointer `}
+          className={`shadow-25% flex gap-2 flex-col p-2  bg-white rounded-md overflow-hidden cursor-pointer `}
           style={{ width, height }}
           onClick={onClick}
-          key={key}
         >
           <ItemsImg images={images} homeItem />
 
@@ -38,7 +36,7 @@ const ItemsProduct = ({
             </div>
           )}
           <h3 className="font-semibold">{name}</h3>
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex gap-2">
             {pricesale === 0 ? (
               <>
                 <p className="text-red-500 text-[15px] text-center font-medium">
@@ -67,7 +65,7 @@ const ItemsProduct = ({
             return (
               <Link
                 to={"productdetail/" + items?.slug}
-                className={`shadow-lg flex gap-2 flex-col p-2 w-[173.5px] h-[271px] bg-white rounded-md overflow-hidden cursor-pointer`}
+                className={`shadow-25% flex gap-2 flex-col p-2 w-[173.5px] h-[271px] bg-white rounded-md overflow-hidden cursor-pointer`}
                 key={index}
               >
                 <ItemsImg images={JSON.parse(items?.images)} homeItem />
@@ -107,7 +105,7 @@ const ItemsProduct = ({
             return (
               <Link
                 to={"productdetail/" + items?.slug}
-                className={`shadow-lg flex gap-2 flex-col p-2 w-[173.5px] h-[271px] bg-white rounded-md overflow-hidden cursor-pointer`}
+                className={`shadow-25% flex gap-2 flex-col p-2 w-[173.5px] h-[271px] bg-white rounded-md overflow-hidden cursor-pointer`}
                 key={index}
               >
                 <ItemsImg images={JSON.parse(items?.images)} homeItem />
@@ -143,4 +141,4 @@ const ItemsProduct = ({
   );
 };
 
-export default memo(ItemsProduct);
+export default ItemsProduct;

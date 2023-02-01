@@ -49,24 +49,30 @@ export const getProductDetailSlugService = (query) =>
   });
 
 //Get product width category
-export const getProductCategoryService = (body) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      // console.log(body.categoryId);
-      const response = await db.Product.findAll({
-        raw: true,
-        where: { categoryId: body.categoryId },
-        order: [["createdAt", "DESC"]],
-      });
-      resolve({
-        err: response ? 0 : 1,
-        msg: response ? "OK" : "Failed to get product category service.",
-        response,
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+// export const getProductCategoryService = (body) =>
+//   new Promise(async (resolve, reject) => {
+//     try {
+//       // console.log(query.);
+//       const response = await db.Product.findAll({
+//         raw: true,
+//         where: { categoryId: body.categoryId },
+//         nest: true,
+//         include: [
+//           { model: db.Category, as: "categories" },
+//           { model: db.Brand, as: "brands" },
+//           { model: db.Opera, as: "operas" },
+//         ],
+//         order: [["createdAt", "DESC"]],
+//       });
+//       resolve({
+//         err: response ? 0 : 1,
+//         msg: response ? "OK" : "Failed to get product category service.",
+//         response,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
 
 // add products
 export const insertProductsSerivce = (body) =>

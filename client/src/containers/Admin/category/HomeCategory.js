@@ -1,22 +1,22 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../../store/actions";
 import Swal from "sweetalert2";
-import { ItemsImg } from "../../../components";
+import { ItemsImg, ItemsPaginate, Pagination } from "../../../components";
 import Insert from "./Insert";
 import Edit from "./Edit";
 import { Link } from "react-router-dom";
 import { apiUpdateCategories } from "../../../services";
 
 import icons from "../../../ultils/icons";
-import { ImSortAmountDesc } from "react-icons/im";
+
 const HomeCategory = () => {
   const [modal, setModal] = useState(false);
   const [modalEdit, setmodalEdit] = useState(false);
   const [dataCategoryEdit, setDataCategoryEdit] = useState({});
 
   const dispatch = useDispatch();
-
+  const { BiTrash } = icons;
   const { categories } = useSelector((state) => state.category);
   useEffect(() => {
     fetchData();
@@ -24,8 +24,6 @@ const HomeCategory = () => {
   const fetchData = async () => {
     dispatch(actions.getCategories());
   };
-
-  const { BiTrash } = icons;
 
   const submitStatus = (items) => {
     Swal.fire({
@@ -45,6 +43,25 @@ const HomeCategory = () => {
       }
     });
   };
+
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = categories
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+  const total =
+    categories.filter((item) => item.status === 1);
+  const pageCount = Math.ceil(total.length / itemsPerPage);
+  // console.log(total);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % categories.length;
+    setItemOffset(newOffset);
+  };
+ 
 
   return (
     <div className="w-full">
@@ -114,12 +131,7 @@ const HomeCategory = () => {
                           </th>
                         </tr>
                         <tr className="bg-gray-50 border-b border-gray-200 text-xs leading-4 text-gray-500 uppercase tracking-wider">
-                          <th className="px-6 py-3 text-left font-medium ">
-                            <input
-                              className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                              type="checkbox"
-                            />
-                          </th>
+                          <th className="px-6 py-3 text-left font-medium "></th>
                           <th className="px-6 py-3 text-left font-medium">
                             Name
                           </th>
@@ -143,8 +155,8 @@ const HomeCategory = () => {
                       </thead>
 
                       <tbody className="bg-white">
-                        {categories?.length > 0 &&
-                          categories
+                        {currentItems?.length > 0 &&
+                          currentItems
                             .filter((item) => item.status !== 0)
                             .map((items, index) => {
                               return (
@@ -225,6 +237,12 @@ const HomeCategory = () => {
                 modalEdit={modalEdit}
                 setmodalEdit={setmodalEdit}
                 dataCategoryEdit={dataCategoryEdit}
+              />
+            </div>
+            <div>
+              <Pagination
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
               />
             </div>
           </div>

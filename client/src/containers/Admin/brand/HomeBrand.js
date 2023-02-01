@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ItemsImg } from "../../../components";
+import { ItemsImg, Pagination } from "../../../components";
 import * as actions from "../../../store/actions";
 import Edit from "./Edit";
 import Insert from "./Insert";
@@ -42,6 +42,24 @@ const HomeBrand = () => {
       }
     });
   };
+   //Panginate
+   const [itemOffset, setItemOffset] = useState(0);
+   const [itemsPerPage, setItemsPerPage] = useState(5);
+ 
+   const endOffset = itemOffset + itemsPerPage;
+   const currentItems = brands
+     .filter((item) => item.status === 1)
+     .slice(itemOffset, endOffset);
+   const total =
+     brands.filter((item) => item.status === 1);
+   const pageCount = Math.ceil(total.length / itemsPerPage);
+   // console.log(total);
+ 
+   const handlePageClick = (event) => {
+     const newOffset = (event.selected * itemsPerPage) % brands.length;
+     setItemOffset(newOffset);
+   };
+  
   return (
     <div>
       <div className="w-full">
@@ -140,8 +158,8 @@ const HomeBrand = () => {
                         </thead>
 
                         <tbody className="bg-white">
-                          {brands?.length > 0 &&
-                            brands
+                          {currentItems?.length > 0 &&
+                            currentItems
                               .filter((item) => item.status !== 0)
                               .map((items, index) => {
                                 return (
@@ -224,6 +242,12 @@ const HomeBrand = () => {
                   dataBrandEdit={dataBrandEdit}
                 />
               </div>
+              <div>
+              <Pagination
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
+              />
+            </div>
             </div>
           </div>
         </div>

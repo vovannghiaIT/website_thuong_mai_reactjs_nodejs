@@ -10,3 +10,8 @@ export { default as ProductDetail } from "./ProductDetail";
 export { default as ProductImagesSlider } from "./ProductImagesSlider";
 export { default as ProductCategory } from "./ProductCategory";
 export { default as Cart } from "./Cart";
+export { default as Payment } from "./Payment";
+export { default as CategoryAll } from "./CategoryAll";
+export { default as CategoryProduct } from "./CategoryProduct";
+export { default as FilterProduct } from "./FilterProduct";
+export { default as Search } from "./Search";

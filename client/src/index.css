@@ -180,3 +180,48 @@ input[type=number] {
 :root {
     --swiper-navigation-size: 25px !important;
 }
+
+/* Pangination */
+
+.item__page>ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.item__page>ul>li {
+    padding: 5px 10px;
+    color: #000;
+}
+
+.item__page>ul>li.selected {
+    padding: 5px 10px;
+    border-radius: 10%;
+    background-color: #4caf50;
+    color: #fff
+}
+
+.item__page>ul>li:hover:not(.selected) {
+    padding: 5px 10px;
+    background-color: #ddd;
+}
+
+/* type range multi */
+.multi-range-slider .thumb::before {
+    border: 0px !important;
+    box-shadow: 0px 0px 2px black, inset 0px 0px 1px grey !important;
+}
+
+.multi-range-slider .bar-left {
+    box-shadow: inset 0px 0px 1px black !important;
+}
+
+.multi-range-slider .bar-right {
+    box-shadow: inset 0px 0px 1px black !important;
+}
+
+.multi-range-slider .bar-inner {
+    box-shadow: none !important;
+    border: none !important;
+}

@@ -4,7 +4,7 @@ import icons from "../../../ultils/icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../../store/actions";
 import Insert from "./Insert";
-import { ItemsImg } from "../../../components";
+import { ItemsImg, Pagination } from "../../../components";
 import Swal from "sweetalert2";
 import { apiUpdateProducts } from "../../../services";
 import Edit from "./Edit";
@@ -43,6 +43,22 @@ const HomeProduct = () => {
         fetchData();
       }
     });
+  };
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = products
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+  const total = products.filter((item) => item.status === 1);
+  const pageCount = Math.ceil(total.length / itemsPerPage);
+  // console.log(total);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % products.length;
+    setItemOffset(newOffset);
   };
 
   return (
@@ -142,8 +158,8 @@ const HomeProduct = () => {
                         </thead>
 
                         <tbody className="bg-white">
-                          {products?.length > 0 &&
-                            products
+                          {currentItems?.length > 0 &&
+                            currentItems
                               .filter((item) => item.status !== 0)
                               .map((items, index) => {
                                 return (
@@ -226,6 +242,12 @@ const HomeProduct = () => {
                   dataProductEdit={dataProductEdit}
                 />
               </div>
+              <div>
+              <Pagination
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
+              />
+            </div>
             </div>
           </div>
         </div>

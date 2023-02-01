@@ -8,6 +8,7 @@ import { formatVietnameseToString } from "../../../ultils/Common/formatVietnames
 //CKEditor
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Loading } from "../../../components";
 
 const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,9 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
   const { FaCamera, ImBin } = icons;
 
   const [sale, setSale] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [invalidFields, setInvalidFields] = useState([]);
   const [addCategory, setAddCategory] = useState([]);
   const [addBrands, setAddBrands] = useState([]);
   const [addOperas, setAddOperas] = useState([]);
@@ -97,7 +101,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
         description: JSON.parse(dataProductEdit?.description) || 0,
         number: dataProductEdit?.number || "",
         price: dataProductEdit?.price || "",
-        pricesale: dataProductEdit?.pricesale || "",
+        pricesale: dataProductEdit?.pricesale || 0,
         status: dataProductEdit?.status || 1,
       });
       setAddCategory(dataProductEdit?.categories?.id || "");
@@ -108,6 +112,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
 
   const handleFile = async (e) => {
     e.stopPropagation();
+    setLoading(true);
     //biến imhg chứa link ảnh
     let images = [];
     const files = e.target.files;
@@ -124,6 +129,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
         images = [...images, response.data?.secure_url];
       }
 
+      setLoading(false);
       setImagesPreview((prev) => [...prev, ...images]);
       setPayload((prev) => ({
         ...prev,
@@ -159,13 +165,34 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
     payload.slug = slug;
 
     // console.log(payload);
-    await apiUpdateProducts(payload);
-    setModalEdit(false);
-    fetchDataProduct();
-    setImagesPreview([]);
+    let invalids = validate(payload);
+    if (invalids === 0) {
+      await apiUpdateProducts(payload);
+      setModalEdit(false);
+      fetchDataProduct();
+      setImagesPreview([]);
+    }
   };
 
-  const [checked, setChecked] = useState(true);
+  const validate = (payload) => {
+    let invalids = 0;
+    let fields = Object.entries(payload);
+    fields.forEach((item) => {
+      if (item[1] === "") {
+        setInvalidFields((prev) => [
+          ...prev,
+          {
+            name: item[0],
+            message: "Bạn không được bỏ trống trường này.",
+          },
+        ]);
+        invalids++;
+      }
+    });
+
+    return invalids;
+  };
+
   return (
     <div>
       {modalEdit && (
@@ -205,6 +232,13 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "name") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "name")?.message}
+                      </small>
+                    )}
+
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Danh mục sản phẩm</label>
                     <select
@@ -224,6 +258,15 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           );
                         })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "categoryId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "categoryId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Thương hiệu sản phẩm</label>
@@ -244,6 +287,15 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           );
                         })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "brandId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "BrandId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Hệ điều hành</label>
@@ -264,6 +316,15 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           );
                         })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "operaId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "operaId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div>
                     <label>Description</label>
@@ -281,22 +342,37 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                 </div>
                 <div className="w-[40%]">
                   <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
-                    <label
-                      htmlFor="file"
-                      className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
-                    >
-                      <FaCamera size={50} color="blue" />
-                      <span>Thêm ảnh</span>
-                    </label>
-                    <input
-                      type="file"
-                      hidden
-                      id="file"
-                      className="w-full bg-gray-100 p-2 mt-2 mb-3"
-                      onChange={handleFile}
-                      multiple
-                    />
+                  {loading ? (
+                      <Loading />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="images"
+                          className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
+                        >
+                          <FaCamera size={50} color="blue" />
+                          <span>Thêm ảnh</span>
+                        </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="images"
+                          className="w-full bg-gray-100 p-2 mt-2"
+                          onChange={handleFile}
+                        />
+                      </>
+                    )}
                   </div>
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "images") && (
+                      <small className="text-red-500 italic ">
+                        {
+                          invalidFields.find((i) => i.name === "images")
+                            ?.message
+                        }
+                      </small>
+                    )}
+
                   {/* multiple chọn được nhìu hình */}
                   <div className="mt-2 h-[70px] flex gap-2   flex-wrap overflow-y-auto">
                     {imagesPreview?.map((item, index) => {
@@ -331,6 +407,16 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "number") && (
+                      <small className="text-red-500 italic ">
+                        {
+                          invalidFields.find((i) => i.name === "number")
+                            ?.message
+                        }
+                      </small>
+                    )}
+
                   <label>Giá</label>
                   <input
                     type="number"
@@ -344,6 +430,13 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "price") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "price")?.message}
+                      </small>
+                    )}
+
                   <div className="flex gap-2 mb-2">
                     <>
                       <input
@@ -358,6 +451,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           }));
                         }}
                       />
+                     
 
                       <span>Khuyến mãi</span>
                     </>
@@ -377,6 +471,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           }))
                         }
                       />
+                      
                     </div>
                   )}
                 </div>

@@ -10,6 +10,7 @@ import { apiInsertProducts, apiUploadImages } from "../../../services";
 //CKEditor
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Loading } from "../../../components";
 
 const Insert = ({ modal, setModal }) => {
   const { ImBin, FaCamera } = icons;
@@ -26,6 +27,8 @@ const Insert = ({ modal, setModal }) => {
   const { brands } = useSelector((state) => state.brand);
   const { operas } = useSelector((state) => state.opera);
   const [imagesPreview, setImagesPreview] = useState([]);
+  const [invalidFields, setInvalidFields] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -44,15 +47,15 @@ const Insert = ({ modal, setModal }) => {
   };
   const [payload, setPayload] = useState({
     name: "",
-    categoryId: 0,
-    operaId: 0,
-    brandId: 0,
+    categoryId: "",
+    operaId: "",
+    brandId: "",
     images: "",
     star: 0,
     slug: "",
     description: "",
-    number: 0,
-    price: 0,
+    number: "",
+    price: "",
     pricesale: 0,
     status: 1,
   });
@@ -73,6 +76,7 @@ const Insert = ({ modal, setModal }) => {
 
   const handleFile = async (e) => {
     e.stopPropagation();
+    setLoading(true)
     const files = e.target.files;
     //biến imhg chứa link ảnh
     let images = [];
@@ -88,7 +92,7 @@ const Insert = ({ modal, setModal }) => {
       if (response.status === 200) {
         images = [...images, response.data?.secure_url];
       }
-
+      setLoading(false)
       setImagesPreview((prev) => [...prev, ...images]);
       setPayload((prev) => ({
         ...prev,
@@ -110,26 +114,63 @@ const Insert = ({ modal, setModal }) => {
   };
 
   const addProduct = async () => {
-    let categoryId = addCategory;
+    // console.log(addCategory)
+    let categoryId = addCategory > 0 ? addCategory : "";
     payload.categoryId = categoryId;
 
-    let brandId = addBrand;
+    let brandId = addBrand > 0 ? addBrand : "";
     payload.brandId = brandId;
 
-    let operaId = addOpera;
+    let operaId = addOpera > 0 ? addOpera : "";
     payload.operaId = operaId;
 
-    let description = dataDescription;
+    let description = dataDescription ? dataDescription : "";
     payload.description = description;
 
     let slug = formatVietnameseToString(payload.name);
     payload.slug = slug;
 
-    //  console.log(payload);
-    await apiInsertProducts(payload);
-    setModal(false);
-    fetchDataProduct();
-    setImagesPreview([]);
+    // console.log(payload);
+    let invalids = validate(payload);
+    // console.log("invalids", invalids);
+    if (invalids === 0) {
+      await apiInsertProducts(payload);
+      setModal(false);
+      fetchDataProduct();
+      setImagesPreview([]);
+      setPayload({
+      name: "",
+      categoryId: "",
+      operaId: "",
+      brandId: "",
+      images: "",
+      star: 0,
+      slug: "",
+      description: "",
+      number: "",
+      price: "",
+      pricesale: 0,
+      status: 1,
+      });
+    }
+  };
+  const validate = (payload) => {
+    let invalids = 0;
+    let fields = Object.entries(payload);
+    fields.forEach((item) => {
+      if (item[1] === "") {
+        setInvalidFields((prev) => [
+          ...prev,
+          {
+            name: item[0],
+            message: "Bạn không được bỏ trống trường này.",
+          },
+        ]);
+        invalids++;
+      }
+    });
+
+    return invalids;
   };
   return (
     <div>
@@ -160,7 +201,7 @@ const Insert = ({ modal, setModal }) => {
                   <input
                     type="text"
                     id="name"
-                    className="w-full bg-gray-100 p-2 mt-2 mb-3"
+                    className="w-full bg-gray-100 p-2 mt-2"
                     onChange={(e) =>
                       setPayload((prev) => ({
                         ...prev,
@@ -168,6 +209,13 @@ const Insert = ({ modal, setModal }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "name") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "name")?.message}
+                      </small>
+                    )}
+
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Danh mục sản phẩm</label>
                     <select
@@ -189,6 +237,15 @@ const Insert = ({ modal, setModal }) => {
                             );
                           })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "categoryId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "categoryId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Thương hiệu sản phẩm</label>
@@ -211,6 +268,15 @@ const Insert = ({ modal, setModal }) => {
                             );
                           })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "brandId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "brandId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div className="flex flex-col gap-2 mb-3">
                     <label>Hệ điều hành </label>
@@ -233,6 +299,15 @@ const Insert = ({ modal, setModal }) => {
                             );
                           })}
                     </select>
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "operaId") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "operaId")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   <div>
                     <label>Description</label>
@@ -245,27 +320,52 @@ const Insert = ({ modal, setModal }) => {
                           setDataDescription(data);
                         }}
                       />
+                      {invalidFields.length > 0 &&
+                        invalidFields.some((i) => i.name === "description") && (
+                          <small className="text-red-500 italic">
+                            {
+                              invalidFields.find(
+                                (i) => i.name === "description"
+                              )?.message
+                            }
+                          </small>
+                        )}
                     </div>
                   </div>
                 </div>
                 <div className="w-[40%]">
                   <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
-                    <label
-                      htmlFor="file"
-                      className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
-                    >
-                      <FaCamera size={50} color="blue" />
-                      <span>Thêm ảnh</span>
-                    </label>
-                    <input
-                      type="file"
-                      hidden
-                      id="file"
-                      className="w-full bg-gray-100 p-2 mt-2 mb-3"
-                      onChange={handleFile}
-                      //multiple
-                    />
+                    {loading ? (
+                      <Loading />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="images"
+                          className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
+                        >
+                          <FaCamera size={50} color="blue" />
+                          <span>Thêm ảnh</span>
+                        </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="images"
+                          className="w-full bg-gray-100 p-2 mt-2"
+                          onChange={handleFile}
+                        />
+                      </>
+                    )}
                   </div>
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "images") && (
+                      <small className="text-red-500 italic ">
+                        {
+                          invalidFields.find((i) => i.name === "images")
+                            ?.message
+                        }
+                      </small>
+                    )}
+
                   {/* multiple chọn được nhìu hình */}
                   <div className="mt-2 h-[70px] flex gap-2   flex-wrap overflow-y-auto">
                     {imagesPreview?.map((item, index) => {
@@ -299,6 +399,16 @@ const Insert = ({ modal, setModal }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "number") && (
+                      <small className="text-red-500 italic">
+                        {
+                          invalidFields.find((i) => i.name === "number")
+                            ?.message
+                        }
+                      </small>
+                    )}
+
                   <label>Giá</label>
                   <input
                     type="number"
@@ -311,6 +421,13 @@ const Insert = ({ modal, setModal }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "price") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "price")?.message}
+                      </small>
+                    )}
+
                   <div className="flex gap-2 mb-2">
                     <input
                       type="checkbox"
@@ -349,20 +466,6 @@ const Insert = ({ modal, setModal }) => {
                   type="submit"
                   onClick={() => {
                     addProduct();
-                    setPayload({
-                      name: "",
-                      categoryId: 0,
-                      operaId: 0,
-                      brandId: 0,
-                      images: "",
-                      star: 0,
-                      slug: "",
-                      description: "",
-                      number: 0,
-                      price: 0,
-                      pricesale: 0,
-                      status: 1,
-                    });
                   }}
                   className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
                 >

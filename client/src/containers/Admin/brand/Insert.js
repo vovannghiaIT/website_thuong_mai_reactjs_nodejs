@@ -11,6 +11,7 @@ const Insert = ({ setModal, modal }) => {
     slug: "",
     status: 1,
   });
+  const [invalidFields, setInvalidFields] = useState([]);
   useEffect(() => {
     fetchData();
   }, []);
@@ -20,18 +21,54 @@ const Insert = ({ setModal, modal }) => {
   const addBrands = async () => {
     let slug = formatVietnameseToString(payload.name);
     payload.slug = slug;
-    await apiInsertBrands(payload);
-    setModal(false);
-    fetchData();
+    let invalids = validate(payload);
+    if (invalids === 0) {
+      await apiInsertBrands(payload);
+      setModal(false);
+      fetchData();
+      setPayload({
+        name: "",
+        slug: "",
+        status: 1,
+      });
+      setInvalidFields([]);
+    }
   };
   const addBrandKey = async (e) => {
     if (e.key === "Enter") {
       let slug = formatVietnameseToString(payload.name);
       payload.slug = slug;
-      await apiInsertBrands(payload);
-      setModal(false);
-      fetchData();
+      let invalids = validate(payload);
+      if (invalids === 0) {
+        await apiInsertBrands(payload);
+        setModal(false);
+        fetchData();
+        setPayload({
+          name: "",
+          slug: "",
+          status: 1,
+        });
+        setInvalidFields([]);
+      }
     }
+  };
+  const validate = (payload) => {
+    let invalids = 0;
+    let fields = Object.entries(payload);
+    fields.forEach((item) => {
+      if (item[1] === "") {
+        setInvalidFields((prev) => [
+          ...prev,
+          {
+            name: item[0],
+            message: "Bạn không được bỏ trống trường này.",
+          },
+        ]);
+        invalids++;
+      }
+    });
+
+    return invalids;
   };
   return (
     <div>
@@ -80,6 +117,15 @@ const Insert = ({ setModal, modal }) => {
                       }}
                       required
                     />
+                    {invalidFields.length > 0 &&
+                      invalidFields.some((i) => i.name === "name") && (
+                        <small className="text-red-500 italic ">
+                          {
+                            invalidFields.find((i) => i.name === "name")
+                              ?.message
+                          }
+                        </small>
+                      )}
                   </div>
                   {/* <div className="w-[60%]">
                     <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
@@ -133,11 +179,6 @@ const Insert = ({ setModal, modal }) => {
                     type="submit"
                     onClick={() => {
                       addBrands();
-                      setPayload({
-                        name: "",
-                        slug: "",
-                        status: 1,
-                      });
                     }}
                     className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
                   >

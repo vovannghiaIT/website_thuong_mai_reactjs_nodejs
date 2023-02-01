@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Pagination } from "../../../components";
 import { apiUpdateBrands, apiUpdateOpera } from "../../../services";
 import * as actions from "../../../store/actions";
 import icons from "../../../ultils/icons";
@@ -42,6 +43,23 @@ const HomeOpera = () => {
       }
     });
   };
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = operas
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+  const total = operas.filter((item) => item.status === 1);
+  const pageCount = Math.ceil(total.length / itemsPerPage);
+  // console.log(total);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % operas.length;
+    setItemOffset(newOffset);
+  };
+
   return (
     <div>
       <div className="w-full">
@@ -140,8 +158,8 @@ const HomeOpera = () => {
                         </thead>
 
                         <tbody className="bg-white">
-                          {operas?.length > 0 &&
-                            operas
+                          {currentItems?.length > 0 &&
+                            currentItems
                               .filter((item) => item.status !== 0)
                               .map((items, index) => {
                                 return (
@@ -222,6 +240,12 @@ const HomeOpera = () => {
                   modalEdit={modalEdit}
                   setModalEdit={setModalEdit}
                   dataOperaEdit={dataOperaEdit}
+                />
+              </div>
+              <div>
+                <Pagination
+                  pageCount={pageCount}
+                  handlePageClick={handlePageClick}
                 />
               </div>
             </div>

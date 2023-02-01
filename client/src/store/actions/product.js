@@ -45,27 +45,27 @@ export const getProductDetail = (payload) => async (dispatch) => {
     });
   }
 };
-export const getProductCategory = (payload) => async (dispatch) => {
-  try {
-    const response = await apis.apiGetProductCategory(payload);
-    // console.log(response);
+// export const getProductCategory = (payload) => async (dispatch) => {
+//   try {
+//     const response = await apis.apiGetProductCategory(payload);
+//     // console.log(response);
 
-    if (response?.data.err === 0) {
-      dispatch({
-        type: actionTypes.GET_PRODUCTCATEGORY,
-        dataProductCategory: response.data.response,
-      });
-    } else {
-      dispatch({
-        type: actionTypes.GET_PRODUCTCATEGORY,
-        msg: response.data.msg,
-        dataProductCategory: null,
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: actionTypes.GET_PRODUCTCATEGORY,
-      dataProductCategory: null,
-    });
-  }
-};
+//     if (response?.data.err === 0) {
+//       dispatch({
+//         type: actionTypes.GET_PRODUCTCATEGORY,
+//         dataProductCategory: response.data.response,
+//       });
+//     } else {
+//       dispatch({
+//         type: actionTypes.GET_PRODUCTCATEGORY,
+//         msg: response.data.msg,
+//         dataProductCategory: null,
+//       });
+//     }
+//   } catch (error) {
+//     dispatch({
+//       type: actionTypes.GET_PRODUCTCATEGORY,
+//       dataProductCategory: null,
+//     });
+//   }
+// };

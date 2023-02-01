@@ -7,6 +7,7 @@ import { apiUpdateProducts } from "../../services";
 import { numberWithCommas } from "../../ultils/Common/formatVietnameseToString";
 import * as actions from "../../store/actions";
 import { toast, ToastContainer } from "react-toastify";
+import { path } from "../../ultils/constant";
 const Cart = () => {
   const [cookies, setCookie] = useCookies(["Cart"]);
 
@@ -78,7 +79,7 @@ const Cart = () => {
         ...cartNumber,
         images: img,
         number:
-          parseInt(cartNumber?.Cartnumber) - (parseInt(items?.number) -1) - 1,
+          parseInt(cartNumber?.Cartnumber) - (parseInt(items?.number) - 1) - 1,
       });
       // setDataCart([...cart, numberQty]);
     } else {
@@ -119,20 +120,23 @@ const Cart = () => {
                 {cookies?.Cart?.length > 0 ? cookies?.Cart?.length : 0} sản phẩm
               </h2>
             </div>
-            <div className="flex mt-2 mb-5">
-              <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
-                Thông tin sản phẩm
-              </h3>
-              <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
-                Số lượng
-              </h3>
-              <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">
-                Giá
-              </h3>
-              <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
-                Tổng
-              </h3>
-            </div>
+            {dataCart?.length > 0 && (
+              <div className="flex mt-2 mb-5">
+                <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
+                  Thông tin sản phẩm
+                </h3>
+                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
+                  Số lượng
+                </h3>
+                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">
+                  Giá
+                </h3>
+                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
+                  Tổng
+                </h3>
+              </div>
+            )}
+
             {dataCart?.length > 0 &&
               dataCart?.map((items, index) => {
                 return (
@@ -217,7 +221,11 @@ const Cart = () => {
                   </div>
                 );
               })}
-
+            {dataCart?.length <= 0 && (
+              <div className="text-center w-full bg-yellow-200 p-4 text-yellow-500">
+                Chưa có sản phẩm trong giỏ hàng
+              </div>
+            )}
             <button
               onClick={() => backHome()}
               className="flex font-semibold text-indigo-600 text-sm mt-10"
@@ -268,9 +276,11 @@ const Cart = () => {
 
                 <span>{totalCart()}</span>
               </div>
-              <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
-                Thanh Toán
-              </button>
+              <Link to={"/" + path.PAY}>
+                <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+                  Thanh Toán
+                </button>
+              </Link>
             </div>
           </div>
         </div>

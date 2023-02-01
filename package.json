@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react-paginate": "^8.1.4",
     "serialize": "^0.1.3"
   }
 }

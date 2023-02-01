@@ -5,6 +5,10 @@ export const path = {
   RESETPASSWORD: "mat-khau",
   LOGIN: "/login",
   CART: "Cart",
+  CATEGORYPRODUCT: "category-product/:slug",
+  SEARCH: "search/:key",
+  CATEGORYALL: "categoryAll",
+  PAY: "Cart/Pay",
   // admin
   ADMIN: "/admin/*",
   CATEGORY: "/category",

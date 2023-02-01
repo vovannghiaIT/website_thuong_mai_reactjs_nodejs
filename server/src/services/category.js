@@ -71,26 +71,26 @@ export const updateCategoriesService = (body) =>
       reject(error);
     }
   });
-export const GetIdCategoriesService = (body) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      //console.log(body);
-      const response = await db.Category.findOne({
-        where: {
-          id: body.id,
-        },
-        raw: true,
-      });
+// export const GetIdCategoriesService = (body) =>
+//   new Promise(async (resolve, reject) => {
+//     try {
+//       //console.log(body);
+//       const response = await db.Category.findOne({
+//         where: {
+//           id: body.id,
+//         },
+//         raw: true,
+//       });
 
-      resolve({
-        err: response ? 0 : 1,
-        msg: response ? "OK" : "Failed to get id categories.",
-        response,
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+//       resolve({
+//         err: response ? 0 : 1,
+//         msg: response ? "OK" : "Failed to get id categories.",
+//         response,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
 export const DeleteCategoriesService = (body) =>
   new Promise(async (resolve, reject) => {
     try {

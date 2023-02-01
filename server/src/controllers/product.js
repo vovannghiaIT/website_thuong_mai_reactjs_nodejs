@@ -24,19 +24,19 @@ export const getDetailProduct = async (req, res) => {
     });
   }
 };
-export const getProductCategory = async (req, res) => {
-  try {
-    // const { slug, ...query } = req.query;
-    //console.log(req.body);
-    const response = await services.getProductCategoryService(req.body);
-    return res.status(200).json(response);
-  } catch (error) {
-    return res.status(500).json({
-      err: -1,
-      msg: "Failed at product category controller: " + error,
-    });
-  }
-};
+// export const getProductCategory = async (req, res) => {
+//   try {
+//     // const { slug, ...query } = req.query;
+//     console.log(req.body);
+//     const response = await services.getProductCategoryService(req.body);
+//     return res.status(200).json(response);
+//   } catch (error) {
+//     return res.status(500).json({
+//       err: -1,
+//       msg: "Failed at product category controller: " + error,
+//     });
+//   }
+// };
 export const insertProduct = async (req, res) => {
   try {
     const response = await services.insertProductsSerivce(req.body);

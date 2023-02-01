@@ -33,8 +33,8 @@ export const apiGetProductCategory = (payload) =>
     try {
       const response = await axiosConfig({
         method: "get",
-        url: "/api/v1/product/productcategory",
-        data: { categoryId: payload },
+        url: `/api/v1/product/productcategory/` + payload,
+        params: { categoryId: payload },
       });
       // console.log(payload);
       resolve(response);

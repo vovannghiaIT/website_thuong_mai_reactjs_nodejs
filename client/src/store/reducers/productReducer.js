@@ -20,12 +20,12 @@ const productReducer = (state = initState, action) => {
         dataDetail: action.dataDetail || [],
         msg: action.msg || "",
       };
-    case actionTypes.GET_PRODUCTCATEGORY:
-      return {
-        ...state,
-        dataProductCategory: action.dataProductCategory || [],
-        msg: action.msg || "",
-      };
+    // case actionTypes.GET_PRODUCTCATEGORY:
+    //   return {
+    //     ...state,
+    //     dataProductCategory: action.dataProductCategory || [],
+    //     msg: action.msg || "",
+    //   };
 
     default:
       return state;

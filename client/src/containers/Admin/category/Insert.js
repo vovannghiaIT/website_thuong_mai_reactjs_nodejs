@@ -8,12 +8,15 @@ import {
   formatVietnameseToString,
   formatUpCaseToString,
 } from "../../../ultils/Common/formatVietnameseToString";
+import { Loading } from "../../../components";
 
 const Insert = ({ modal, setModal }) => {
   const dispatch = useDispatch();
 
   const { categories } = useSelector((state) => state.category);
   const [imagesPreview, setImagesPreview] = useState([]);
+  const [invalidFields, setInvalidFields] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     fetchData();
   }, []);
@@ -34,18 +37,50 @@ const Insert = ({ modal, setModal }) => {
   const addCategory = async () => {
     let slug = formatVietnameseToString(payload.name);
     payload.slug = slug;
-
     let code = formatUpCaseToString(payload.name);
     payload.code = code;
+    let invalids = validate(payload);
+    // console.log(invalids);
+    if (invalids === 0) {
+      await apiInsertCategories(payload);
+      setModal(false);
+      fetchData();
+      setImagesPreview([]);
+      setPayload({
+        name: "",
+        code: "",
+        slug: "",
+        images: "",
+        parentid: "0",
+        value: "",
+        status: 1,
+      });
+      setInvalidFields([]);
+    }
+  };
 
-    await apiInsertCategories(payload);
-    setModal(false);
-    fetchData();
-    setImagesPreview([]);
+  const validate = (payload) => {
+    let invalids = 0;
+    let fields = Object.entries(payload);
+    fields.forEach((item) => {
+      if (item[1] === "") {
+        setInvalidFields((prev) => [
+          ...prev,
+          {
+            name: item[0],
+            message: "Bạn không được bỏ trống trường này.",
+          },
+        ]);
+        invalids++;
+      }
+    });
+
+    return invalids;
   };
 
   const handleFile = async (e) => {
     e.stopPropagation();
+    setLoading(true);
     const files = e.target.files;
     //biến imhg chứa link ảnh
     let images = [];
@@ -61,7 +96,7 @@ const Insert = ({ modal, setModal }) => {
       if (response.status === 200) {
         images = [...images, response.data?.secure_url];
       }
-
+      setLoading(false);
       setImagesPreview((prev) => [...prev, ...images]);
       setPayload((prev) => ({
         ...prev,
@@ -106,12 +141,12 @@ const Insert = ({ modal, setModal }) => {
               }}
             >
               <div className="bg-white flex gap-5  px-4 pt-5">
-                <div>
+                <div className="w-[40%]">
                   <label>Name</label>
                   <input
                     type="text"
                     id="name"
-                    className="w-full bg-gray-100 p-2 mt-2 mb-3"
+                    className="w-full bg-gray-100 p-2 mt-2 "
                     onChange={(e) =>
                       setPayload((prev) => ({
                         ...prev,
@@ -119,11 +154,18 @@ const Insert = ({ modal, setModal }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "name") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "name")?.message}
+                      </small>
+                    )}
+                  <br />
                   <label>Values</label>
                   <input
                     type="text"
                     id="value"
-                    className="w-full bg-gray-100 p-2 mt-2 mb-3"
+                    className="w-full bg-gray-100 p-2 mt-2 "
                     onChange={(e) =>
                       setPayload((prev) => ({
                         ...prev,
@@ -131,24 +173,45 @@ const Insert = ({ modal, setModal }) => {
                       }))
                     }
                   />
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "value") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "value")?.message}
+                      </small>
+                    )}
                 </div>
                 <div className="w-[60%]">
                   <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
-                    <label
-                      htmlFor="images"
-                      className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
-                    >
-                      <FaCamera size={50} color="blue" />
-                      <span>Thêm ảnh</span>
-                    </label>
-                    <input
-                      type="file"
-                      hidden
-                      id="images"
-                      className="w-full bg-gray-100 p-2 mt-2 mb-3"
-                      onChange={handleFile}
-                    />
+                    {loading ? (
+                      <Loading />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="images"
+                          className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
+                        >
+                          <FaCamera size={50} color="blue" />
+                          <span>Thêm ảnh</span>
+                        </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="images"
+                          className="w-full bg-gray-100 p-2 mt-2"
+                          onChange={handleFile}
+                        />
+                      </>
+                    )}
                   </div>
+                  {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "images") && (
+                      <small className="text-red-500 italic ">
+                        {
+                          invalidFields.find((i) => i.name === "images")
+                            ?.message
+                        }
+                      </small>
+                    )}
                   {/* multiple chọn được nhìu hình */}
                   <div className="mt-2 ">
                     {imagesPreview?.map((item) => {
@@ -184,15 +247,6 @@ const Insert = ({ modal, setModal }) => {
                   type="submit"
                   onClick={() => {
                     addCategory();
-                    setPayload({
-                      name: "",
-                      code: "",
-                      slug: "",
-                      images: "",
-                      parentid: "0",
-                      value: "",
-                      status: 1,
-                    });
                   }}
                   className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
                 >

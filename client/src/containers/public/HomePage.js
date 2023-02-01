@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import imgSlider from "../../assets/img/big_bn_slide.png";
 import Slider from "react-slick";
 import icons from "../../ultils/icons";
@@ -7,11 +7,13 @@ import {
   FillterItem,
   ItemsContext,
   ItemsImg,
+  Loading,
 } from "../../components";
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions";
+import { path } from "../../ultils/constant";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -29,9 +31,11 @@ const HomePage = () => {
 
   const { categories } = useSelector((state) => state.category);
   const { products } = useSelector((state) => state.product);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     fetchData();
+    setLoading(false);
   }, []);
   const fetchData = async () => {
     dispatch(actions.getCategories());
@@ -79,7 +83,10 @@ const HomePage = () => {
       },
     ],
   };
-
+  const stroll = () => {
+    window.scrollTo(0, 0);
+  };
+  const indexs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   return (
     <div className="w-full border border-1 overflow-hidden bg-gray-200 ">
       <img src={imgSlider} alt="img slider " />
@@ -156,24 +163,42 @@ const HomePage = () => {
           </div>
         </div>
         <div className=" p-3   bg-white rounded-lg">
-          <h1 className="font-medium uppercase"> Danh mục nổi bật</h1>
+          <div className="flex justify-between">
+            <h1 className="font-medium uppercase">Danh mục nổi bật</h1>
+            <Link
+              onClick={() => stroll()}
+              to={path.CATEGORYALL}
+              className="text-[12px] border bg-slate-200 hover:border-red-500 hover:text-red-500 px-2 py-1 rounded-lg"
+            >
+              Xem tất cả
+            </Link>
+          </div>
           <div className="flex gap-2 flex-wrap mt-4">
-            {categories?.length > 0 &&
-              categories
-                .filter((item) => item.status === 1)
-                .map((items, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="flex flex-col justify-center items-center h-[126px] min-w-[5%] max-w-[12%] shadow-4md border font-light text-[13px] hover:text-red-500 hover:shadow-red-500/40 rounded-lg cursor-pointer"
-                    >
-                      <div className="w-[50%]">
-                        <ItemsImg images={JSON.parse(items?.images)} />
-                      </div>
-                      <span>{items.name}</span>
-                    </div>
-                  );
-                })}
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                {categories?.length > 0 &&
+                  categories
+                    .filter((i, index) => indexs.some((i) => i === index))
+                    .filter((item) => item.status === 1)
+                    .map((items, index) => {
+                      return (
+                        <Link
+                          to={"/category-product/" + items.slug}
+                          onClick={() => stroll()}
+                          key={index}
+                          className="flex flex-col justify-center items-center h-[126px] min-w-[5%] max-w-[12%] shadow-4md border font-light text-[13px] hover:text-red-500 hover:shadow-red-500/40 rounded-lg cursor-pointer"
+                        >
+                          <div className="w-[50%]">
+                            <ItemsImg images={JSON.parse(items?.images)} />
+                          </div>
+                          <span>{items.name}</span>
+                        </Link>
+                      );
+                    })}
+              </>
+            )}
           </div>
         </div>
         <div className="  liner__gradient p-5 rounded-xl">
@@ -187,24 +212,31 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-3 mt-5 ">
-            {products?.length > 0 &&
-              products
-                .filter((item) => item.pricesale !== 0 && item.status === 1)
-                .map((items, index) => {
-                  return (
-                    <ItemsProduct
-                      key={index}
-                      sale
-                      slug={items?.slug}
-                      width={183.5}
-                      height={300}
-                      name={items?.name}
-                      images={JSON.parse(items?.images)}
-                      pricesale={items?.pricesale}
-                      price={items?.price}
-                    />
-                  );
-                })}
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                {products?.length > 0 &&
+                  products
+                    .filter((item) => item.pricesale !== 0 && item.status === 1)
+                    .map((items, index) => {
+                      return (
+                        <div key={index}>
+                          <ItemsProduct
+                            sale
+                            slug={items?.slug}
+                            width={183.5}
+                            height={300}
+                            name={items?.name}
+                            images={JSON.parse(items?.images)}
+                            pricesale={items?.pricesale}
+                            price={items?.price}
+                          />
+                        </div>
+                      );
+                    })}
+              </>
+            )}
           </div>
         </div>
         <div className="bg-white p-2 rounded-xl">
@@ -227,24 +259,31 @@ const HomePage = () => {
             />
           </div>
           <div className="flex gap-2 mt-2 flex-wrap">
-            {products?.length > 0 &&
-              products
-                .filter((item) => item.pricesale !== 0 && item.status === 1)
-                .map((items, index) => {
-                  return (
-                    <ItemsProduct
-                      key={index}
-                      sale
-                      slug={items?.slug}
-                      width={158.5}
-                      height={300}
-                      name={items?.name}
-                      images={JSON.parse(items?.images)}
-                      pricesale={items?.pricesale}
-                      price={items?.price}
-                    />
-                  );
-                })}
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                {products?.length > 0 &&
+                  products
+                    .filter((item) => item.pricesale !== 0 && item.status === 1)
+                    .map((items, index) => {
+                      return (
+                        <div key={index}>
+                          <ItemsProduct
+                            sale
+                            slug={items?.slug}
+                            width={158.5}
+                            height={300}
+                            name={items?.name}
+                            images={JSON.parse(items?.images)}
+                            pricesale={items?.pricesale}
+                            price={items?.price}
+                          />
+                        </div>
+                      );
+                    })}
+              </>
+            )}
           </div>
           <button className="rounded-md shadow-25% text-[16px] text-center w-full mt-5 p-1 hover:shadow-red-500 hover:text-red">
             Xem tất cả

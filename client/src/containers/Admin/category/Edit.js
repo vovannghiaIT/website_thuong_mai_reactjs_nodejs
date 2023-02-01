@@ -8,10 +8,13 @@ import {
 
 import * as actions from "../../../store/actions";
 import { useDispatch } from "react-redux";
+import { Loading } from "../../../components";
 
 const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
   const [imagesPreview, setImagesPreview] = useState([]);
   const { FaCamera, ImBin } = icons;
+  const [loading, setLoading] = useState(false);
+  const [invalidFields, setInvalidFields] = useState([]);
   const dispatch = useDispatch();
 
   const [payload, setPayload] = useState(() => {
@@ -65,6 +68,7 @@ const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
 
   const handleFile = async (e) => {
     e.stopPropagation();
+    setLoading(true);
     const files = e.target.files;
     //biến imhg chứa link ảnh
     let images = [];
@@ -80,7 +84,7 @@ const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
       if (response.status === 200) {
         images = [...images, response.data?.secure_url];
       }
-
+      setLoading(false);
       setImagesPreview((prev) => [...prev, ...images]);
       setPayload((prev) => ({
         ...prev,
@@ -112,12 +116,32 @@ const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
 
     let code = formatUpCaseToString(payload.name);
     payload.code = code;
+    let invalids = validate(payload);
+    if (invalids === 0) {
+      await apiUpdateCategories(payload);
 
-    await apiUpdateCategories(payload);
+      setmodalEdit(false);
+      fetchData();
+      setImagesPreview([]);
+    }
+  };
+  const validate = (payload) => {
+    let invalids = 0;
+    let fields = Object.entries(payload);
+    fields.forEach((item) => {
+      if (item[1] === "") {
+        setInvalidFields((prev) => [
+          ...prev,
+          {
+            name: item[0],
+            message: "Bạn không được bỏ trống trường này.",
+          },
+        ]);
+        invalids++;
+      }
+    });
 
-    setmodalEdit(false);
-    fetchData();
-    setImagesPreview([]);
+    return invalids;
   };
   return (
     <div>
@@ -158,6 +182,12 @@ const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
                       }))
                     }
                   />
+                   {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "name") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "name")?.message}
+                      </small>
+                    )}
                   <label>Values</label>
                   <input
                     type="text"
@@ -171,24 +201,41 @@ const Edit = ({ modalEdit, setmodalEdit, dataCategoryEdit }) => {
                       }))
                     }
                   />
+                   {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "value") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "value")?.message}
+                      </small>
+                    )}
                 </div>
                 <div className="w-[60%]">
                   <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
-                    <label
-                      htmlFor="images"
-                      className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
-                    >
-                      <FaCamera size={50} color="blue" />
-                      <span>Thêm ảnh</span>
-                    </label>
-                    <input
-                      type="file"
-                      hidden
-                      id="images"
-                      className="w-full bg-gray-100 p-2 mt-2 mb-3"
-                      onChange={handleFile}
-                      multiple
-                    />
+                  {loading ? (
+                      <Loading />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="images"
+                          className="p-5 cursor-pointer flex items-center flex-col  justify-center gap-2"
+                        >
+                          <FaCamera size={50} color="blue" />
+                          <span>Thêm ảnh</span>
+                        </label>
+                        <input
+                          type="file"
+                          hidden
+                          id="images"
+                          className="w-full bg-gray-100 p-2 mt-2"
+                          onChange={handleFile}
+                        />
+                      </>
+                    )}
+                     {invalidFields.length > 0 &&
+                    invalidFields.some((i) => i.name === "images") && (
+                      <small className="text-red-500 italic ">
+                        {invalidFields.find((i) => i.name === "images")?.message}
+                      </small>
+                    )}
                   </div>
                   {/* multiple chọn được nhìu hình */}
                   <div className="mt-2 ">
