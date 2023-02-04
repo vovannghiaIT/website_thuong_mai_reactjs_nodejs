@@ -42,6 +42,15 @@ const HomePage = () => {
     dispatch(actions.getProduct());
   };
 
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(16);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItemsCategories = categories
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+
   const slider = React.useRef(null);
   let settings = {
     dots: false,
@@ -178,25 +187,22 @@ const HomePage = () => {
               <Loading />
             ) : (
               <>
-                {categories?.length > 0 &&
-                  categories
-                    .filter((i, index) => indexs.some((i) => i === index))
-                    .filter((item) => item.status === 1)
-                    .map((items, index) => {
-                      return (
-                        <Link
-                          to={"/category-product/" + items.slug}
-                          onClick={() => stroll()}
-                          key={index}
-                          className="flex flex-col justify-center items-center h-[126px] min-w-[5%] max-w-[12%] shadow-4md border font-light text-[13px] hover:text-red-500 hover:shadow-red-500/40 rounded-lg cursor-pointer"
-                        >
-                          <div className="w-[50%]">
-                            <ItemsImg images={JSON.parse(items?.images)} />
-                          </div>
-                          <span>{items.name}</span>
-                        </Link>
-                      );
-                    })}
+                {currentItemsCategories?.length > 0 &&
+                  currentItemsCategories.map((items, index) => {
+                    return (
+                      <Link
+                        to={"/category-product/" + items.slug}
+                        onClick={() => stroll()}
+                        key={index}
+                        className="flex flex-col justify-center items-center h-[126px] min-w-[5%] max-w-[12%] shadow-4md border font-light text-[13px] hover:text-red-500 hover:shadow-red-500/40 rounded-lg cursor-pointer"
+                      >
+                        <div className="w-[50%]">
+                          <ItemsImg images={JSON.parse(items?.images)} />
+                        </div>
+                        <span>{items.name}</span>
+                      </Link>
+                    );
+                  })}
               </>
             )}
           </div>
@@ -273,7 +279,7 @@ const HomePage = () => {
                             sale
                             slug={items?.slug}
                             width={158.5}
-                            height={300}
+                            height={250}
                             name={items?.name}
                             images={JSON.parse(items?.images)}
                             pricesale={items?.pricesale}

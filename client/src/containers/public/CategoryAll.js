@@ -14,9 +14,7 @@ const CategoryAll = () => {
         </div>
       </div>
       <div className="bg-white w-[80%] rounded-lg mx-auto p-2 ">
-        <h1 className="font-semibold text-red-500 text-[22px]">
-          Tất cả danh mục
-        </h1>
+        <h1 className="text-[22px]">Tất cả loại sản phẩm</h1>
         <div className="mt-2 flex justify-start items-start gap-4 flex-wrap p-2">
           {categories?.length > 0 &&
             categories

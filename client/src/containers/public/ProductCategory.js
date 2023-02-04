@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as actions from "../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { ItemsProduct } from "../../components";
+import { ItemsProduct, NoProduct } from "../../components";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
@@ -23,12 +23,13 @@ import "swiper/css/bundle";
 import "swiper/css/grid";
 import { useParams } from "react-router-dom";
 
-const ProductCategory = ({ categoryId }) => {
-  //console.log(dataProductCategory);
+const ProductCategory = ({ categoryId, productSlug }) => {
+  // console.log(productSlug);
+  let slug = productSlug ? productSlug : "";
+  let itemId = categoryId ? categoryId : "";
   const { products } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
-  const params = useParams();
   useEffect(() => {
     fetchData();
   }, []);
@@ -42,14 +43,10 @@ const ProductCategory = ({ categoryId }) => {
 
   const feachDataDetail = (slug) => {
     let payload = slug;
-    //console.log(slug);
     dispatch(actions.getProductDetail(payload));
     window.scrollTo(0, 0);
   };
 
-  // const { dataDetail } = useSelector((state) => state.product);
-
-  //console.log(products);
   return (
     <div>
       <Swiper
@@ -74,27 +71,41 @@ const ProductCategory = ({ categoryId }) => {
         modules={[Keyboard, Scrollbar, Navigation, Pagination, Grid]}
         className="mySwiper"
       >
-        {products?.length > 0 &&
-          products
-            .filter(
-              (item) => item.categoryId === categoryId && item.status === 1
-            )
-            .map((items, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <ItemsProduct
-                    onClick={() => feachDataDetail(items?.slug)}
-                    sale
-                    slug={items?.slug}
-                    width={183.5}
-                    name={items?.name}
-                    images={JSON.parse(items?.images)}
-                    pricesale={items?.pricesale}
-                    price={items?.price}
-                  />
-                </SwiperSlide>
-              );
-            })}
+        {products.filter(
+          (item) =>
+            item.categoryId === itemId &&
+            item.status === 1 &&
+            item.slug !== slug
+        ) < 1 ? (
+          <NoProduct />
+        ) : (
+          <>
+            {products?.length > 0 &&
+              products
+                .filter(
+                  (item) =>
+                    item.categoryId === itemId &&
+                    item.status === 1 &&
+                    item.slug !== slug
+                )
+                .map((items, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <ItemsProduct
+                        onClick={() => feachDataDetail(items?.slug)}
+                        sale
+                        slug={items?.slug}
+                        width={183.5}
+                        name={items?.name}
+                        images={JSON.parse(items?.images)}
+                        pricesale={items?.pricesale}
+                        price={items?.price}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
+          </>
+        )}
       </Swiper>
     </div>
   );

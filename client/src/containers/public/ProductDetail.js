@@ -343,7 +343,10 @@ const ProductDetail = () => {
               <div className="w-[70%] mt-4 border-2 p-3  rounded-xl">
                 <h2 className="font-semibold">Sản phẩm liên quan</h2>
                 <div>
-                  <ProductCategory categoryId={dataDetail?.categoryId} />
+                  <ProductCategory
+                    categoryId={dataDetail?.categoryId}
+                    productSlug={dataDetail?.slug}
+                  />
                 </div>
               </div>
             </div>

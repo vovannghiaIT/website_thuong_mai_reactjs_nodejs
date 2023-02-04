@@ -24,7 +24,12 @@ import {
   AiOutlineUser,
   AiFillStar,
 } from "react-icons/ai";
-import { GrPrevious, GrNext, GrFormNext } from "react-icons/gr";
+import {
+  GrPrevious,
+  GrNext,
+  GrFormNext,
+  GrFormPreviousLink,
+} from "react-icons/gr";
 import { FiList } from "react-icons/fi";
 import { MdNavigateNext } from "react-icons/md";
 import { ImBin } from "react-icons/im";
@@ -32,6 +37,7 @@ import { BiTrash, BiCircle } from "react-icons/bi";
 import { GoLocation } from "react-icons/go";
 import { SlLogout } from "react-icons/sl";
 import { GiShoppingCart } from "react-icons/gi";
+import { FcPrevious } from "react-icons/fc";
 const icons = {
   FiSearch,
   BsFillTelephoneFill,
@@ -62,6 +68,8 @@ const icons = {
   BiCircle,
   BsFillArrowUpCircleFill,
   BsFillArrowDownCircleFill,
+  GrFormPreviousLink,
+  FcPrevious,
 };
 
 export default icons;

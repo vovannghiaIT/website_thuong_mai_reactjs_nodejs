@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ItemsProduct } from "../../components";
+import { ItemsProduct, NoProduct } from "../../components";
 import ButtonFilter from "../../components/ButtonFilter";
 import * as actions from "../../store/actions";
 import FilterProduct from "./FilterProduct";
@@ -177,11 +177,7 @@ const CategoryProduct = () => {
                   </div>
                 );
               })}
-            {ProductCategory?.length <= 0 && (
-              <div className="text-center w-full bg-yellow-200 p-4 text-yellow-500">
-                Chưa có sản phẩm
-              </div>
-            )}
+            {ProductCategory?.length <= 0 && <NoProduct />}
           </div>
         </div>
       </div>

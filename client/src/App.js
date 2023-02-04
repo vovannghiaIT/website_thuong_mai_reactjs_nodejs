@@ -34,8 +34,8 @@ function App() {
           <Route path={path.CATEGORYPRODUCT} element={<CategoryProduct />} />
           <Route path={path.CATEGORYALL} element={<CategoryAll />} />
           <Route path={path.SEARCH} element={<Search />} />
-          <Route path={path.PAY} element={<Payment />} />
         </Route>
+        <Route path={path.PAY} element={<Payment />} />
         <Route path={path.LOGIN} element={<Login />} />
         <Route path={path.ADMIN} element={<Admin />} />
       </Routes>

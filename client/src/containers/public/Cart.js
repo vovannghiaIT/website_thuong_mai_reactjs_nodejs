@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Cookies, useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { ItemsImg } from "../../components";
+import { ItemsImg, NoProduct } from "../../components";
 import { apiUpdateProducts } from "../../services";
 import { numberWithCommas } from "../../ultils/Common/formatVietnameseToString";
 import * as actions from "../../store/actions";
@@ -43,15 +43,15 @@ const Cart = () => {
   };
   const NumberUp = async (items) => {
     let cartNumber = dataCart?.find((item) => item?.id === items.id);
-    // console.log("cartNumber", cartNumber)
+
     let cart = dataCart?.filter((item) => item?.id !== items.id);
-    // console.log("cart", cart);
+
     let numberQty = {
       ...cartNumber,
       number: parseInt(cartNumber?.number) + 1,
       Cartnumber: parseInt(cartNumber?.Cartnumber) - 1,
     };
-    console.log("total", [...cart, numberQty]);
+    // console.log("total", [...cart, numberQty]);
     if (cartNumber?.number < cartNumber?.Cartnumber) {
       toast.success("Tăng số lượng thành công!", {
         position: "top-right",
@@ -63,25 +63,16 @@ const Cart = () => {
         theme: "light",
       });
 
-      setCookie("Cart", [...cart, numberQty]);
-      setDataCart([...cart, numberQty]);
+      setCookie("Cart", [numberQty, ...cart]);
+      setDataCart([numberQty, ...cart]);
       let img = items?.images;
-      // console.log({
+
+      // await apiUpdateProducts({
       //   ...cartNumber,
       //   images: img,
-      //   number:  (parseInt(items?.number)+1),
-      //   Cartnumber: cartNumber?.Cartnumber -1,
+      //   number:
+      //     parseInt(cartNumber?.Cartnumber) - (parseInt(items?.number) - 1) - 1,
       // });
-      // let numberItem = cartNumber?.Cartnumber ;
-      // console.log("numberItem",parseInt(items?.number)+ 1)
-
-      await apiUpdateProducts({
-        ...cartNumber,
-        images: img,
-        number:
-          parseInt(cartNumber?.Cartnumber) - (parseInt(items?.number) - 1) - 1,
-      });
-      // setDataCart([...cart, numberQty]);
     } else {
       toast.warn("Tăng số lượng thất bại!", {
         position: "top-right",
@@ -95,7 +86,48 @@ const Cart = () => {
     }
   };
   const NumberDown = (items) => {
-    // console.log("numeberDown");
+    let cartNumber = dataCart?.find((item) => item?.id === items.id);
+
+    let cart = dataCart?.filter((item) => item?.id !== items.id);
+
+    let numberQty = {
+      ...cartNumber,
+      number: parseInt(cartNumber?.number) - 1,
+      Cartnumber: parseInt(cartNumber?.Cartnumber) + 1,
+    };
+    // console.log("total", [...cart, numberQty]);
+    if (cartNumber?.number > 0) {
+      toast.success("Giảm số lượng thành công!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+
+      setCookie("Cart", [numberQty, ...cart]);
+      setDataCart([numberQty, ...cart]);
+      let img = items?.images;
+
+      // await apiUpdateProducts({
+      //   ...cartNumber,
+      //   images: img,
+      //   number:
+      //     parseInt(cartNumber?.Cartnumber) - (parseInt(items?.number) - 1) - 1,
+      // });
+    } else {
+      toast.warn("Tăng số lượng thất bại!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
   };
   // console.log(dataCart)
   let total = 0;
@@ -221,11 +253,7 @@ const Cart = () => {
                   </div>
                 );
               })}
-            {dataCart?.length <= 0 && (
-              <div className="text-center w-full bg-yellow-200 p-4 text-yellow-500">
-                Chưa có sản phẩm trong giỏ hàng
-              </div>
-            )}
+            {!dataCart && <NoProduct />}
             <button
               onClick={() => backHome()}
               className="flex font-semibold text-indigo-600 text-sm mt-10"

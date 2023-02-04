@@ -195,6 +195,7 @@ const Login = () => {
                   ["lastName"]: e.target.value,
                 }))
               }
+              onFocus={() => setInvalidFields([])}
             />
             {invalidFields.length > 0 &&
               invalidFields.some((i) => i.name === "lastName") && (
@@ -214,6 +215,7 @@ const Login = () => {
                   ["phone"]: e.target.value,
                 }))
               }
+              onFocus={() => setInvalidFields([])}
             />
             {invalidFields.length > 0 &&
               invalidFields.some((i) => i.name === "phone") && (
@@ -235,6 +237,7 @@ const Login = () => {
               ["email"]: e.target.value,
             }))
           }
+          onFocus={() => setInvalidFields([])}
         />
         {invalidFields.length > 0 &&
           invalidFields.some((i) => i.name === "email") && (
@@ -255,6 +258,7 @@ const Login = () => {
             }))
           }
           onKeyDown={(e) => handleFromKey(e)}
+          onFocus={() => setInvalidFields([])}
         />
         {invalidFields.length > 0 &&
           invalidFields.some((i) => i.name === "password") && (

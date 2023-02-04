@@ -6,7 +6,7 @@ export const path = {
   LOGIN: "/login",
   CART: "Cart",
   CATEGORYPRODUCT: "category-product/:slug",
-  SEARCH: "search/:key",
+  SEARCH: "search",
   CATEGORYALL: "categoryAll",
   PAY: "Cart/Pay",
   // admin

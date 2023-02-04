@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import logo from "../../assets/img/logo.png";
 import icons from "../../ultils/icons";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, Link, createSearchParams } from "react-router-dom";
 import { path } from "../../ultils/constant";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../store/actions";
@@ -12,6 +12,7 @@ const { FiSearch, HiOutlineUserCircle, FaShoppingCart } = icons;
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const goLogin = useCallback((flag) => {
     navigate(path.LOGIN, { state: { flag } });
   }, []);
@@ -19,7 +20,6 @@ const Header = () => {
 
   const { categories } = useSelector((state) => state.category);
   const [cookies, setCookie] = useCookies(["Cart"]);
-  let [searchParams, setSearchParams] = useSearchParams();
 
   const [valueSearch, setValueSearch] = useState();
   useEffect(() => {
@@ -30,49 +30,66 @@ const Header = () => {
   const fetchData = async () => {
     dispatch(actions.getCategories());
   };
-  const handleSubmitSearch = (e) => {
-    setValueSearch(e.target.value);
-    console.log(valueSearch);
-    // console.log(valueSearch);
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    // let name = searchParams.get("name");
-    // if (name) {
-    // navigate("/search/", valueSearch);
-    // }
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItemsCategories = categories
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+
+  // console.log(currentItemsCategories);
+  const submitSearch = () => {
+    navigate({
+      pathname: "search",
+      search: createSearchParams({
+        key: valueSearch,
+      }).toString(),
+    });
   };
-  const handleSearch = (e) => {
-    setValueSearch(e.target.value);
-
-    // let name = searchParams.get("name");
-    // if (name) {
-    // navigate("/search/", valueSearch);
-    // }
+  const submitSearchKey = (e) => {
+    if (e.key === "Enter") {
+      navigate({
+        pathname: "search",
+        search: createSearchParams({
+          key: valueSearch,
+        }).toString(),
+      });
+    }
   };
 
+  const submitSearchValue = (e) => {
+    setValueSearch(e.target.value);
+  };
   const indexs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   return (
     <div className="w-full bg-[#d70018] ">
       <div className="w-4/5 text-white mx-auto md:max-lg:w-full md:max-lg:px-2  sm:max-lg:mx-0 sm:max-lg:w-full sm:max-lg:px-4">
         <div className="flex pt-2 sm:max-md:flex-col justify-between items-center gap-2">
-          <Link to={path.HOME}>
+          <Link to={"/"}>
             <img src={logo} alt="anh" className="w-[170px] sm:max-md:w-full" />
           </Link>
           <div className="text-[13px] hover:text-yellow-300 cursor-pointer w-[113px] sm:max-md:hidden">
             Hệ thống của hàng
           </div>
           <div className="flex  sm:max-md:w-full">
-            <label htmlFor="search" className="flex  sm:max-md:w-full">
+            <label
+              // onSubmit={handleSearch}
+              htmlFor="search"
+              className="flex  sm:max-md:w-full"
+            >
               <input
                 type="text"
                 id="search"
-                value={valueSearch}
-                onChange={(e) => handleSearch(e)}
+                value={valueSearch || ""}
+                onChange={(e) => submitSearchValue(e)}
                 placeholder="Tìm kiếm"
+                onKeyDown={(e) => submitSearchKey(e)}
                 className="py-2 px-2 text-sm border border-blue-lighter rounded-l outline-none text-black sm:max-md:w-full"
               />
               <button
-                // to={`/search/` + searchParams}
-                onSubmit={(e) => handleSubmitSearch(e)}
+                onClick={() => submitSearch()}
                 className="w-10 flex items-center justify-center bg-white text-black border-t border-r border-b border-blue-lighter rounded-r text-blue-dark"
               >
                 <FiSearch />
@@ -150,21 +167,18 @@ const Header = () => {
           </div>
         </div>
         <div className="flex gap-10 py-1 cursor-pointer text-white">
-          {categories?.length > 0 &&
-            categories
-              .filter((i, index) => indexs.some((i) => i === index))
-              .filter((item) => item.status === 1)
-              .map((items, index) => {
-                return (
-                  <Link
-                    to={"/category-product/" + items.slug}
-                    key={index}
-                    className="capitalize hover:text-yellow-300 "
-                  >
-                    {items.name}
-                  </Link>
-                );
-              })}
+          {currentItemsCategories?.length > 0 &&
+            currentItemsCategories.map((items, index) => {
+              return (
+                <Link
+                  to={"/category-product/" + items.slug}
+                  key={index}
+                  className="capitalize hover:text-yellow-300 "
+                >
+                  {items.name}
+                </Link>
+              );
+            })}
         </div>
       </div>
     </div>
