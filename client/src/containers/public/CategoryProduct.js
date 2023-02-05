@@ -25,6 +25,7 @@ const CategoryProduct = () => {
     dispatch(actions.getProduct());
     dispatch(actions.getBrand());
     dispatch(actions.getOpera());
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   let slug = params?.slug;

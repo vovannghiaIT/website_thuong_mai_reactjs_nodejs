@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.hasOne(models.Orderdetail, { foreignKey: "orderId", as: "orders" });
-      Order.belongsTo(models.Opera, {
+      Order.belongsTo(models.User, {
         foreignKey: "userId",
         targetKey: "id",
         as: "users",
@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Order.init(
     {
-      name: DataTypes.STRING,
       code: DataTypes.STRING,
       userId: DataTypes.STRING,
       exportdate: DataTypes.STRING,
@@ -28,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       deliveryphone: DataTypes.STRING,
       deliveryemail: DataTypes.STRING,
       value: DataTypes.STRING,
+      updateby: DataTypes.STRING,
+      createby: DataTypes.STRING,
       status: DataTypes.INTEGER,
     },
     {

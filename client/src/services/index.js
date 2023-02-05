@@ -5,3 +5,5 @@ export * from "./product";
 export * from "./brand";
 export * from "./opera";
 export * from "./search";
+export * from "./order";
+export * from "./orderdetail";

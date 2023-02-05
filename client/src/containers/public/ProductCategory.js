@@ -44,7 +44,7 @@ const ProductCategory = ({ categoryId, productSlug }) => {
   const feachDataDetail = (slug) => {
     let payload = slug;
     dispatch(actions.getProductDetail(payload));
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

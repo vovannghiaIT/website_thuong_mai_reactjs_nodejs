@@ -5,6 +5,8 @@ import productRouter from "./product";
 import brandRouter from "./brand";
 import operaRouter from "./opera";
 import searchRouter from "./search";
+import orderRouter from "./order";
+import orderDetailRouter from "./orderdetail";
 
 const initRoutes = (app) => {
   app.use("/api/v1/auth", authRouter);
@@ -14,6 +16,8 @@ const initRoutes = (app) => {
   app.use("/api/v1/brand", brandRouter);
   app.use("/api/v1/opera", operaRouter);
   app.use("/api/v1/search", searchRouter);
+  app.use("/api/v1/order", orderRouter);
+  app.use("/api/v1/orderDetail", orderDetailRouter);
 
   return app.use("/", (req, res) => {
     res.send("sever on...");

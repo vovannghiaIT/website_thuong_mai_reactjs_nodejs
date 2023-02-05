@@ -233,7 +233,6 @@ input[type=number] {
 
 input[type="text"] {
     font: 15px/24px "Lato", Arial, sans-serif;
-    color: #333;
     width: 100%;
     box-sizing: border-box;
     letter-spacing: 1px;
@@ -252,7 +251,7 @@ input[type="text"] {
     left: 0;
     width: 0;
     height: 2px;
-    background-color: #3399FF;
+    background-color: #575d59;
     transition: 0.4s;
 }
 

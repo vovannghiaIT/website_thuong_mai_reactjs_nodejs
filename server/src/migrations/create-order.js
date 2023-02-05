@@ -5,8 +5,7 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
+        type: Sequelize.STRING,
       },
       code: {
         type: Sequelize.STRING,
@@ -30,6 +29,12 @@ module.exports = {
         type: Sequelize.STRING,
       },
       value: {
+        type: Sequelize.STRING,
+      },
+      createby: {
+        type: Sequelize.STRING,
+      },
+      updateby: {
         type: Sequelize.STRING,
       },
       status: {
