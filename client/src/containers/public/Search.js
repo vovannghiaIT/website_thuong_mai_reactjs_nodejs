@@ -30,7 +30,7 @@ const Search = () => {
           Tìm kiếm sản phẩm :
           <span className="text-red-500 px-2">{searchParams.get("key")}</span>
         </p>
-        <div className="p-2 flex gap-2  flex-wrap w-full mx-auto">
+        <div className="p-2 grid grid-cols-6 lg:max-xl:grid-cols-5 lg:max-xl:gap-2  md:max-lg:grid-cols-4 md:max-lg:gap-2 sm:max-md:grid-cols-2 sm:max-md:gap-2 gap-4 w-full mx-auto">
           {search?.length > 0 &&
             search
               .filter((item) => item.status === 1)
@@ -39,8 +39,6 @@ const Search = () => {
                   <div key={items.id}>
                     <ItemsProduct
                       slug={items?.slug}
-                      width={180}
-                      height={250}
                       name={items?.name}
                       images={JSON.parse(items?.images)}
                       pricesale={items?.pricesale}

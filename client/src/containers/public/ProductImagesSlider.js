@@ -54,6 +54,24 @@ const ProductImagesSlider = ({ images }) => {
         freeMode={true}
         watchSlidesProgress={true}
         modules={[FreeMode, Navigation, Thumbs]}
+        breakpoints={{
+          1024: {
+            slidesPerView: 4,
+            slidesPerGroup: 4,
+          },
+          767: {
+            slidesPerView: 4,
+            slidesPerGroup: 4,
+          },
+          330: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+          318: {
+            slidesPerView: 1,
+            slidesPerGroup: 1,
+          },
+        }}
         className="mySwiper"
       >
         {images?.length > 1 &&

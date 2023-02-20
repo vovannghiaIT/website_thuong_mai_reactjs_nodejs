@@ -4,18 +4,23 @@ import {
   BsList,
   BsFillArrowUpCircleFill,
   BsFillArrowDownCircleFill,
+  BsBag,
 } from "react-icons/bs";
 import {
   RiShoppingCart2Fill,
   RiArrowDropDownLine,
   RiArrowGoBackFill,
+  RiArrowUpSFill,
+  RiArrowDropDownFill,
 } from "react-icons/ri";
-import { HiOutlineUserCircle } from "react-icons/hi";
+import { HiOutlineUserCircle, HiOutlineUser } from "react-icons/hi";
 import {
   FaShoppingCart,
   FaFacebookF,
   FaCamera,
   FaExchangeAlt,
+  FaUserAlt,
+  FaUsers,
 } from "react-icons/fa";
 import {
   AiOutlineGooglePlus,
@@ -23,6 +28,14 @@ import {
   AiOutlineHome,
   AiOutlineUser,
   AiFillStar,
+  AiFillCheckCircle,
+  AiOutlineEye,
+  AiFillFileExcel,
+  AiOutlineShoppingCart,
+  AiOutlinePhone,
+  AiTwotoneEdit,
+  AiFillEye,
+  AiFillEyeInvisible,
 } from "react-icons/ai";
 import {
   GrPrevious,
@@ -31,13 +44,14 @@ import {
   GrFormPreviousLink,
 } from "react-icons/gr";
 import { FiList } from "react-icons/fi";
-import { MdNavigateNext } from "react-icons/md";
+import { MdNavigateNext, MdRemoveRedEye ,MdOutlineAttachMoney} from "react-icons/md";
 import { ImBin } from "react-icons/im";
 import { BiTrash, BiCircle } from "react-icons/bi";
 import { GoLocation } from "react-icons/go";
 import { SlLogout } from "react-icons/sl";
 import { GiShoppingCart } from "react-icons/gi";
 import { FcPrevious } from "react-icons/fc";
+import { TbLayoutList ,TbBrandNotion} from "react-icons/tb";
 const icons = {
   FiSearch,
   BsFillTelephoneFill,
@@ -70,6 +84,24 @@ const icons = {
   BsFillArrowDownCircleFill,
   GrFormPreviousLink,
   FcPrevious,
+  AiFillCheckCircle,
+  AiOutlineEye,
+  MdRemoveRedEye,
+  AiFillFileExcel,
+  TbLayoutList,
+  FaUserAlt,
+  HiOutlineUser,
+  AiOutlineShoppingCart,
+  AiOutlinePhone,
+  AiTwotoneEdit,
+  AiFillEyeInvisible,
+  AiFillEye,
+  RiArrowUpSFill,
+  RiArrowDropDownFill,
+  BsBag,
+  MdOutlineAttachMoney,
+  FaUsers,
+  TbBrandNotion,
 };
 
 export default icons;

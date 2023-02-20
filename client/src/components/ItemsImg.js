@@ -12,7 +12,7 @@ const ItemsImg = ({ images, homeItem }) => {
             return (
               <img
                 key={index}
-                className="object-cover rounded-full"
+                className="object-cover rounded-full w-full h-full"
                 src={i}
                 alt="anh category"
               />
@@ -27,7 +27,7 @@ const ItemsImg = ({ images, homeItem }) => {
               <img
                 key={index}
                 src={i}
-                className={`object-cover hover:scale-105  ease-in duration-500`}
+                className={`object-cover hover:scale-105  ease-in duration-500  w-full h-full`}
                 alt="img_product"
               />
             );

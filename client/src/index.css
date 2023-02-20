@@ -19,6 +19,10 @@
     clip-path: circle(35.0% at 0 51%);
 }
 
+.clip__pathAdmin {
+    clip-path: circle(50% at 50% 100%);
+}
+
 .liner__gradient {
     background: linear-gradient(#d70018 0%, #ff8a97);
 }
@@ -233,7 +237,6 @@ input[type=number] {
 
 input[type="text"] {
     font: 15px/24px "Lato", Arial, sans-serif;
-    width: 100%;
     box-sizing: border-box;
     letter-spacing: 1px;
 }
@@ -298,4 +301,47 @@ select {
     background-size: 15px 15px;
     background-position: right;
     background-origin: content-box;
+}
+
+/* orderTrack hover */
+
+.order-tracking::before {
+    content: '';
+    display: block;
+    height: 3px;
+    width: calc(100% - 445px);
+
+    top: 18px;
+    position: absolute;
+    left: 55px;
+    z-index: 0;
+}
+
+.order-tracking[data-bg="#f7be16"]::before {
+    background-color: #f7be16;
+}
+
+.order-tracking[data-bg="green"]::before {
+    background-color: green;
+}
+
+
+.order-trackingTwo::before {
+    content: '';
+    display: block;
+    height: 3px;
+    width: calc(100% - 445px);
+
+    top: 18px;
+    position: absolute;
+    left: 51.5%;
+    z-index: 0;
+}
+
+.order-trackingTwo[data-bg="#f7be16"]::before {
+    background-color: #f7be16;
+}
+
+.order-trackingTwo[data-bg="green"]::before {
+    background-color: green;
 }

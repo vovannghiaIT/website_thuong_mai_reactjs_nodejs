@@ -6,3 +6,5 @@ export { default as ItemsContext } from "./ItemsContext";
 export { default as Loading } from "./Loading";
 export { default as Pagination } from "./Pagination";
 export { default as NoProduct } from "./NoProduct";
+export { default as InFoUser } from "./InFoUser";
+export { default as EditInfoUser } from "./EditInfoUser";

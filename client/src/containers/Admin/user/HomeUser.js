@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { ItemsImg } from "../../../components";
 import icons from "../../../ultils/icons";
 import * as action from "../../../store/actions";
-import { apiGetAllUsers, apiUpdateUsers } from "../../../services";
+import { apiUpdateUsers } from "../../../services";
 
 import avatar from "../../../assets/avatar.png";
 import Edit from "./Edit";
+import Swal from "sweetalert2";
 
 const HomeUser = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const HomeUser = () => {
 
   const [modal, setModal] = useState(false);
   const [dataEdit, setDataEdit] = useState([]);
-  console.log(users);
+  // console.log(users);
   useEffect(() => {
     fetchData();
   }, []);
@@ -32,8 +33,28 @@ const HomeUser = () => {
     } else {
       role = 1;
     }
-    await apiUpdateUsers({ ...items, roles: role });
+    let avatar = JSON.parse(items.avatar);
+    await apiUpdateUsers({ ...items, avatar: avatar, roles: role });
     fetchData();
+  };
+  const submitStatus = (item) => {
+    // console.log(item);
+    Swal.fire({
+      title: "Bạn muốn xóa? <br/>" + item?.firstName + item?.lastName,
+      text: "Bạn có thể khôi phục tại thùng rác!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "vâng, chắc chắn rồi!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Xóa thành công!", "Bạn đã đưa vào thùng rác.", "success");
+        let img = JSON.parse(item?.avatar);
+        await apiUpdateUsers({ ...item, avatar: img, status: 0 });
+        fetchData();
+      }
+    });
   };
   return (
     <div className="w-full">
@@ -64,7 +85,7 @@ const HomeUser = () => {
                       Thêm
                     </button> */}
                     <div>
-                      <Link to="/admin/category/trash">
+                      <Link to="/admin/user/trash">
                         <button className="px-6 py-2 bg-red-500 rounded-md relative">
                           <BiTrash color="white" size={20} />
 
@@ -153,9 +174,10 @@ const HomeUser = () => {
                                   <td className="px-2 py-4 whitespace-no-wrap border-b border-gray-200">
                                     <div className="flex items-center">
                                       <div className="flex-shrink-0 h-10 w-10">
-                                        {items.avatar ? (
+                                        {items?.avatar &&
+                                        items?.avatar !== "0" ? (
                                           <ItemsImg
-                                            images={JSON.parse(items?.images)}
+                                            images={JSON.parse(items?.avatar)}
                                           />
                                         ) : (
                                           <img src={avatar} alt="avatar" />
@@ -217,7 +239,7 @@ const HomeUser = () => {
                                       Show
                                     </button>
                                     <button
-                                      //  onClick={() => submitStatus(items)}
+                                      onClick={() => submitStatus(items)}
                                       className="text-indigo-600  px-2 hover:text-indigo-900 focus:outline-none focus:underline"
                                     >
                                       delete

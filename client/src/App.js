@@ -11,6 +11,8 @@ import {
   CategoryProduct,
   CategoryAll,
   Search,
+  ProductAll,
+  OrderTrack,
 } from "./containers/public";
 import { Routes, Route } from "react-router-dom";
 import { path } from "./ultils/constant";
@@ -27,12 +29,14 @@ function App() {
         <Route path={path.HOME} element={<Home />}>
           <Route path="*" element={<HomePage />} />
           <Route path={path.INFO} element={<InfoCustomer />} />
+          <Route path={path.ORDERTRACK} element={<OrderTrack />} />
           <Route path={path.ADDRESS} element={<Address />} />
           <Route path={path.RESETPASSWORD} element={<ReSetPassword />} />
           <Route path={path.PRODUCTDETAIL} element={<ProductDetail />} />
           <Route path={path.CART} element={<Cart />} />
           <Route path={path.CATEGORYPRODUCT} element={<CategoryProduct />} />
           <Route path={path.CATEGORYALL} element={<CategoryAll />} />
+          <Route path={path.PRODUCTALL} element={<ProductAll />} />
           <Route path={path.SEARCH} element={<Search />} />
         </Route>
         <Route path={path.PAY} element={<Payment />} />

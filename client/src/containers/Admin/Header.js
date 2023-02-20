@@ -23,13 +23,20 @@ const Header = () => {
     menuCategories ? setMenuCategories(false) : setMenuCategories(true);
   };
 
-  const { FiList, BsList, RiArrowDropDownLine, MdNavigateNext, BiCircle } =
-    icons;
+  const {
+    FiList,
+    BsList,
+    RiArrowDropDownLine,
+    MdNavigateNext,
+    BiCircle,
+    AiOutlineHome,
+    TbBrandNotion,
+  } = icons;
   const { currentData } = useSelector((state) => state.user);
 
   return (
     <div>
-      <div className="fixed z-10  shadow-md w-full  shadow-gray-500 ">
+      <div className="">
         <div className="flex  justify-between">
           <div className="flex   flex-col justify-center py-2 px-4">
             <Link to={path.ADMIN} className="  ">
@@ -48,7 +55,13 @@ const Header = () => {
         </div>
       </div>
       <div className="flex flex-col gap-3  ">
-        <div className="mt-16  flex flex-col ">
+        <div className="  flex flex-col ">
+          <Link to={path.ADMIN} className="text-start flex  items-center ml-4 ">
+            <span className="p-2">
+              <AiOutlineHome size={20} color="blue" />
+            </span>
+            <span className="capitalize">Trang chủ</span>
+          </Link>
           <div className="bg-[#1d2531]  px-4 py-2">
             <button
               className="text-[16px] text-start flex  items-center `"
@@ -96,7 +109,7 @@ const Header = () => {
             className="text-start flex  mt-2 items-center ml-4 "
           >
             <span className="p-2">
-              <BiCircle size={20} color="red" />
+              <TbBrandNotion size={20} color="red" />
             </span>
             <span className="capitalize">Thương hiệu</span>
           </Link>
@@ -108,6 +121,15 @@ const Header = () => {
               <BiCircle size={20} color="red" />
             </span>
             <span className="capitalize">Hệ điều hành</span>
+          </Link>
+          <Link
+            to="/admin/order"
+            className="text-start flex  mt-2 items-center ml-4 "
+          >
+            <span className="p-2">
+              <BiCircle size={20} color="red" />
+            </span>
+            <span className="capitalize">Quản lý đơn hàng</span>
           </Link>
           <Link
             to="/admin/user"

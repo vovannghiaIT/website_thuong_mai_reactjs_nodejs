@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 
-const FilterProduct = () => {
+const FilterProduct = ({ setsortDown, setsortUp }) => {
   const [min, setMin] = useState(0);
-  const [max, setMax] = useState(1000);
+  const [max, setMax] = useState(100000000);
   const handleInput = (e) => {
     setMin(e.minValue);
     setMax(e.maxValue);
@@ -20,14 +20,15 @@ const FilterProduct = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const submitProduct = (items) => {
-  
-
+    setsortDown();
+    setsortUp();
     setSearchParams(items);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const submitProductPrice = () => {
-   
+    setsortDown();
+    setsortUp();
     let brandSlug = searchParams.get("brandSlug");
 
     if (brandSlug === null) {
@@ -44,18 +45,17 @@ const FilterProduct = () => {
   return (
     <div className="p-2 ">
       <div className="flex  flex-col justify-start items-start gap-4 ">
-        <div>
+        <div className="w-full">
           <h3 className="font-semibold text-red-500 capitalize">Thương hiệu</h3>
-          <div className="flex  flex-wrap justify-start gap-2 w-full h-[200px] overflow-y-auto">
+          <div className=" grid grid-cols-2 gap-2 w-full h-[200px] overflow-y-auto">
             {brands?.length > 0 &&
               brands
                 .filter((items) => items.status === 1)
                 .map((items, index) => {
                   return (
                     <div
-                     
                       onClick={() => submitProduct({ brandSlug: items?.slug })}
-                      className="w-[48.5%] mt-2"
+                      className="w-full "
                       key={index}
                     >
                       <ButtonFilter text={items?.name} />
@@ -69,7 +69,7 @@ const FilterProduct = () => {
           <div className="flex flex-col gap-1">
             <MultiRangeSlider
               min={0}
-              max={1000}
+              max={100000000}
               step={5}
               minValue={min}
               maxValue={max}
@@ -92,11 +92,11 @@ const FilterProduct = () => {
                 handleInput(e);
               }}
             />
-            <div className="flex gap-2 justify-center w-full">
-              <span className="w-[50%]">
+            <div className="grid grid-cols-2 gap-2 justify-center w-full">
+              <span className="w-full">
                 <ButtonFilter text={min} />
               </span>
-              <span className="w-[50%]">
+              <span className="w-full">
                 <ButtonFilter text={max} />
               </span>
             </div>
@@ -109,7 +109,7 @@ const FilterProduct = () => {
           <h3 className="font-semibold text-red-500 capitalize">
             Loại sản phẩm
           </h3>
-          <div className="flex  flex-wrap justify-start gap-2 w-full h-[200px] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-2 w-full h-[200px] overflow-y-auto">
             {categories?.length > 0 &&
               categories
                 .filter((items) => items.status === 1)
@@ -118,7 +118,7 @@ const FilterProduct = () => {
                     <Link
                       to={"/category-product/" + items.slug}
                       onClick={() => submitProduct()}
-                      className="w-[48.5%] mt-2"
+                      className="w-full "
                       key={index}
                     >
                       <ButtonFilter text={items?.name} />

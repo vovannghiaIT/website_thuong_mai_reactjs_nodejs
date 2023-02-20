@@ -10,12 +10,14 @@ import Swal from "sweetalert2";
 import { apiGetCurrent } from "../../services";
 
 const Login = () => {
-  const { FaFacebookF, AiOutlineGooglePlus } = icons;
+  const { FaFacebookF, AiOutlineGooglePlus, AiFillEye, AiFillEyeInvisible } =
+    icons;
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoggedIn, msg, update } = useSelector((state) => state.auth);
   const [isRegister, setisRegister] = useState(location.state?.flag);
+  const [showPassword, setShowPassword] = useState(false);
   const [payload, setPayload] = useState({
     firstName: "",
     lastName: "",
@@ -28,6 +30,10 @@ const Login = () => {
 
   useEffect(() => {
     isLoggedIn && fetchCurrent();
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    isLoggedIn && navigate(-1);
   }, [isLoggedIn]);
 
   const fetchCurrent = async () => {
@@ -77,10 +83,6 @@ const Login = () => {
   useEffect(() => {
     setisRegister(location.state?.flag);
   }, [location.state?.flag]);
-
-  useEffect(() => {
-    isLoggedIn && navigate(-1);
-  }, [isLoggedIn]);
 
   useEffect(() => {
     msg && Swal.fire("Oops !", msg, "error");
@@ -141,9 +143,8 @@ const Login = () => {
         alt="anh"
         className="w-full relative h-screen object-cover"
       />
-      <div className="flex gap-4 flex-col absolute top-0 right-0 border border-orange-500 w-[35%] bg-gray-900/75 text-white h-full overflow-auto px-7 py-4">
+      <div className="flex gap-4  flex-col absolute top-0 right-0 border border-orange-500 w-[35%] md:max-lg:w-[50%] sm:max-md:w-full bg-gray-900/75 text-white h-full overflow-y-auto overflow-x-hidden px-7 py-4">
         <h1 className="text-center font-semibold text-[20px]  ">
-          {" "}
           {isRegister ? "Đăng ký tài khoản" : "Đăng nhập tài khoản"}
         </h1>
         <div className="text-[13px] text-center ">
@@ -153,9 +154,8 @@ const Login = () => {
           >
             Trang chủ
           </Link>
-          /{" "}
+          /
           <span className="px-1">
-            {" "}
             {isRegister ? "Đăng ký tài khoản" : "Đăng nhập tài khoản"}
           </span>
         </div>
@@ -245,21 +245,31 @@ const Login = () => {
               {invalidFields.find((i) => i.name === "email")?.message}
             </small>
           )}
-        <input
-          type="password"
-          id="password"
-          className=" rounded-2xl bg-gray-500 text-white placeholder-gray-50 outline-none py-2 mx-2 px-2"
-          placeholder="Mật khẩu"
-          value={payload.password}
-          onChange={(e) =>
-            setPayload((prev) => ({
-              ...prev,
-              ["password"]: e.target.value,
-            }))
-          }
-          onKeyDown={(e) => handleFromKey(e)}
-          onFocus={() => setInvalidFields([])}
-        />
+        <div className="relative ">
+          <input
+            type={`${showPassword ? "text" : "password"}`}
+            id="password"
+            className=" rounded-2xl w-[96%]  bg-gray-500 text-white placeholder-gray-50 outline-none py-2 mx-2 px-2"
+            placeholder="Mật khẩu"
+            value={payload.password}
+            onChange={(e) =>
+              setPayload((prev) => ({
+                ...prev,
+                ["password"]: e.target.value,
+              }))
+            }
+            onKeyDown={(e) => handleFromKey(e)}
+            onFocus={() => setInvalidFields([])}
+          />
+          <span
+            className="absolute right-5 top-[30%] cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword && <AiFillEye size={20} />}
+            {!showPassword && <AiFillEyeInvisible size={20} />}
+          </span>
+        </div>
+
         {invalidFields.length > 0 &&
           invalidFields.some((i) => i.name === "password") && (
             <small className="text-red-500 italic pl-4">
@@ -291,7 +301,7 @@ const Login = () => {
           </span>
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
-        <div className="flex px-6 justify-between">
+        <div className="flex px-6  sm:max-md:px-2 justify-between">
           <button className="flex items-center text-white bg-blue-800  px-3">
             <FaFacebookF size={14} color="white" className="mx-1" />
             <span className="border-l   border-gray-500 p-1 text-[13px] px-2 py-2">
@@ -329,6 +339,7 @@ const Login = () => {
               password: "",
               status: 1,
             });
+            setShowPassword(false);
           }}
         >
           {isRegister ? "Đăng nhập" : "Tạo tài khoản"}

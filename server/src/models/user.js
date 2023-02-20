@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       roles: DataTypes.INTEGER,
       status: DataTypes.INTEGER,
       avatar: DataTypes.JSON,
+      orders: DataTypes.INTEGER,
     },
     {
       sequelize,

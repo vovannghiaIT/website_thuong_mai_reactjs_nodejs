@@ -9,6 +9,8 @@ import productReducer from "./productReducer";
 import brandReducer from "./brandReducer";
 import operaReducer from "./operaReducer";
 import searchReducer from "./searchReducer";
+import orderReducer from "./orderReducer";
+import orderdetailReducer from "./orderdetailReducer";
 
 const commonConfig = {
   storage,
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
   brand: brandReducer,
   opera: operaReducer,
   search: searchReducer,
+  order: orderReducer,
+  orderdetail: orderdetailReducer,
 });
 
 export default rootReducer;

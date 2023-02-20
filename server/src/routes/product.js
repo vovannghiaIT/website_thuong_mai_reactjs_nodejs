@@ -4,6 +4,7 @@ import * as productController from "../controllers/product";
 const router = express.Router();
 
 router.get("/all", productController.getProduct);
+router.get("/limit", productController.getProductLimit);
 router.get("/detail/:slug", productController.getDetailProduct);
 // router.get("/productcategory/:categoryId", productController.getProductCategory);
 router.post("/insert", productController.insertProduct);

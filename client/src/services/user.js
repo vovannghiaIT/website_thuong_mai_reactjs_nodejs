@@ -5,7 +5,7 @@ export const apiGetCurrent = () =>
     try {
       const response = await axios({
         method: "get",
-        url: "/api/v1/user/get-current",
+        url: "/api/v1/current/get-current",
       });
       resolve(response);
     } catch (error) {
@@ -29,7 +29,20 @@ export const apiUpdateUsers = (payload) =>
     try {
       const response = await axios({
         method: "put",
-        url: "/api/v1/user/update",
+        url: "/api/v1/user/updateNew",
+        data: payload,
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+export const apiUpdateUsersOld = (payload) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios({
+        method: "put",
+        url: "/api/v1/user/updateOld",
         data: payload,
       });
       resolve(response);

@@ -129,12 +129,18 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
         images = [...images, response.data?.secure_url];
       }
 
+      setImagesPreview([...imagesPreview, ...images]);
+
+      // setImagesPreview((prev) => [...prev, ...images]);
+      // setPayload((prev) => ({
+      //   ...prev,
+      //   images: [...prev.images, ...images],
+      // }));
+      setPayload({
+        ...payload,
+        images: [...payload.images, ...images],
+      });
       setLoading(false);
-      setImagesPreview((prev) => [...prev, ...images]);
-      setPayload((prev) => ({
-        ...prev,
-        images: [...prev.images, ...images],
-      }));
     }
   };
 
@@ -342,7 +348,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                 </div>
                 <div className="w-[40%]">
                   <div className="w-full border-[3px] border-dashed  h-[150px] flex items-center justify-center   ">
-                  {loading ? (
+                    {loading ? (
                       <Loading />
                     ) : (
                       <>
@@ -359,6 +365,7 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           id="images"
                           className="w-full bg-gray-100 p-2 mt-2"
                           onChange={handleFile}
+                          multiple
                         />
                       </>
                     )}
@@ -451,7 +458,6 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           }));
                         }}
                       />
-                     
 
                       <span>Khuyến mãi</span>
                     </>
@@ -471,7 +477,6 @@ const Edit = ({ modalEdit, setModalEdit, dataProductEdit }) => {
                           }))
                         }
                       />
-                      
                     </div>
                   )}
                 </div>

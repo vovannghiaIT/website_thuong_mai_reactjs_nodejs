@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import icons from "../../../ultils/icons";
-import * as action from "../../../store/actions";
-import data from "../../../ultils/Common/data.json";
-import { apiUpdateUsers, apiUploadImages } from "../../../services";
-import { Loading } from "../../../components";
+import icons from "../ultils/icons";
+import * as action from "../store/actions";
+import data from "../ultils/Common/data.json";
+import {
+  apiUpdateUsers,
+  apiUpdateUsersOld,
+  apiUploadImages,
+} from "../services";
+import Loading from "./Loading";
+import { toast } from "react-toastify";
 
-const Edit = ({ modal, setModal, dataEdit }) => {
-  // console.log(dataEdit);
+const EditInfoUser = ({ modal, setModal, dataEdit }) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = async () => {
-    dispatch(action.getUserAll());
+    dispatch(action.getCurrent());
   };
 
   // address
@@ -28,6 +29,7 @@ const Edit = ({ modal, setModal, dataEdit }) => {
   const [imagesPreview, setImagesPreview] = useState([]);
   const [loading, setLoading] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
+  // console.log(dataEdit);
   const [payload, setPayload] = useState(() => {
     const initData = {
       id: "",
@@ -36,10 +38,10 @@ const Edit = ({ modal, setModal, dataEdit }) => {
       address: dataEdit?.address || "",
       password: dataEdit?.password || "",
       email: dataEdit?.email || "",
-      avatar: dataEdit?.avatar || null,
+      avatar: dataEdit?.avatar,
       phone: dataEdit?.phone || "",
       gender: 0,
-      roles: 0,
+      roles: dataEdit?.roles || 0,
       status: 1,
     };
     return initData;
@@ -53,9 +55,9 @@ const Edit = ({ modal, setModal, dataEdit }) => {
         firstName: dataEdit?.firstName || "",
         lastName: dataEdit?.lastName || "",
         address: dataEdit?.address || "",
-        password: dataEdit?.password || "",
+        password: dataEdit?.password,
         email: dataEdit?.email || "",
-        avatar: JSON.parse(dataEdit?.avatar) || null,
+        avatar: JSON.parse(dataEdit?.avatar),
         phone: dataEdit?.phone || "",
       });
     }
@@ -143,16 +145,25 @@ const Edit = ({ modal, setModal, dataEdit }) => {
   const submitUpdate = async () => {
     let addressvalue = dataCity + "," + IdDistricts + "," + idWard;
 
-    payload.address = dataEdit?.address === "" ? payload.address : addressvalue;
+    payload.address =
+      dataCity && IdDistricts && idWard ? addressvalue : dataEdit?.address;
     let id = dataEdit?.id;
     payload.id = id;
     // console.log(payload)
-    await apiUpdateUsers(payload);
+    await apiUpdateUsersOld(payload);
     fetchData();
     setImagesPreview([]);
     setModal(false);
+    toast.success("Sữa thông tin thành công!", {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
   };
-
   return (
     <div>
       {modal && (
@@ -172,7 +183,7 @@ const Edit = ({ modal, setModal, dataEdit }) => {
               &#8203;
             </span>
             <div
-              className="mt-[2%] inline-block align-center bg-white rounded-lg text-left  shadow-xl transform transition-all w-[90%] overflow-y-auto h-[520px]"
+              className="mt-[2%] inline-block align-center bg-white rounded-lg text-left  shadow-xl transform transition-all w-[90%] overflow-y-auto "
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -207,20 +218,20 @@ const Edit = ({ modal, setModal, dataEdit }) => {
                   />
                   <div className=" input-effect relative">
                     {/* <input
-                      id="deliveryaddress"
-                      className={`effect-16  has-content w-full`}
-                      type="text"
-                      placeholder=""
-                      value={
-                        payload.address ||
-                        (dataCity ? dataCity : "") +
-                          (dataCity && IdDistricts ? "," : "") +
-                          (IdDistricts ? IdDistricts : " ") +
-                          (IdDistricts && idWard ? "," : "") +
-                          (idWard ? idWard : "")
-                      }
-                      disabled
-                    /> */}
+                  id="deliveryaddress"
+                  className={`effect-16  has-content w-full`}
+                  type="text"
+                  placeholder=""
+                  value={
+                    payload.address ||
+                    (dataCity ? dataCity : "") +
+                      (dataCity && IdDistricts ? "," : "") +
+                      (IdDistricts ? IdDistricts : " ") +
+                      (IdDistricts && idWard ? "," : "") +
+                      (idWard ? idWard : "")
+                  }
+                  disabled
+                /> */}
 
                     <label>Địa chỉ(tùy chọn)</label>
                     <span className="focus-border"></span>
@@ -247,10 +258,10 @@ const Edit = ({ modal, setModal, dataEdit }) => {
                         Tỉnh thành
                       </label>
                       {/* {!dataCity && (
-                        <small className="text-red-500 italic ">
-                          Bạn không được bỏ trống trường này.
-                        </small>
-                      )} */}
+                    <small className="text-red-500 italic ">
+                      Bạn không được bỏ trống trường này.
+                    </small>
+                  )} */}
                     </div>
                     <div className="w-[33%] relative">
                       <select
@@ -275,10 +286,10 @@ const Edit = ({ modal, setModal, dataEdit }) => {
                         Quận huyện(tùy chọn)
                       </label>
                       {/* {!IdDistricts && (
-                        <small className="text-red-500 italic ">
-                          Bạn không được bỏ trống trường này.
-                        </small>
-                      )} */}
+                    <small className="text-red-500 italic ">
+                      Bạn không được bỏ trống trường này.
+                    </small>
+                  )} */}
                     </div>
                     <div className="w-[33%] relative">
                       <select
@@ -303,19 +314,19 @@ const Edit = ({ modal, setModal, dataEdit }) => {
                         Phường xã(tùy chọn)
                       </label>
                       {/* {!idWard && (
-                        <small className="text-red-500 italic ">
-                          Bạn không được bỏ trống trường này.
-                        </small>
-                      )} */}
+                    <small className="text-red-500 italic ">
+                      Bạn không được bỏ trống trường này.
+                    </small>
+                  )} */}
                       <br />
                     </div>
                   </div>
 
-                  <label>
+                  {/* <label>
                     Password
                     <span className="text-red-500"> *(mật khẩu mới)</span>
-                  </label>
-                  <input
+                  </label> */}
+                  {/* <input
                     type="text"
                     id="name"
                     // value={payload.password}
@@ -326,7 +337,7 @@ const Edit = ({ modal, setModal, dataEdit }) => {
                         ["password"]: e.target.value,
                       }))
                     }
-                  />
+                  /> */}
                   <label>Email</label>
                   <input
                     type="text"
@@ -436,4 +447,4 @@ const Edit = ({ modal, setModal, dataEdit }) => {
   );
 };
 
-export default Edit;
+export default EditInfoUser;

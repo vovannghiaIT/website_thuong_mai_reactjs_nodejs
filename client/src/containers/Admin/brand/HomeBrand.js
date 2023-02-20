@@ -14,6 +14,11 @@ const HomeBrand = () => {
   const [modal, setModal] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [dataBrandEdit, setDataBrandEdit] = useState({});
+  //check
+  const [showButtonDelete, setShowButtonDelete] = useState(false);
+  const [checkButtonAll, setCheckButtonAll] = useState(false);
+  const [dataCheck, setDataCheck] = useState([]);
+  //end
   const { brands } = useSelector((state) => state.brand);
   useEffect(() => {
     fetchData();
@@ -42,24 +47,36 @@ const HomeBrand = () => {
       }
     });
   };
-   //Panginate
-   const [itemOffset, setItemOffset] = useState(0);
-   const [itemsPerPage, setItemsPerPage] = useState(5);
- 
-   const endOffset = itemOffset + itemsPerPage;
-   const currentItems = brands
-     .filter((item) => item.status === 1)
-     .slice(itemOffset, endOffset);
-   const total =
-     brands.filter((item) => item.status === 1);
-   const pageCount = Math.ceil(total.length / itemsPerPage);
-   // console.log(total);
- 
-   const handlePageClick = (event) => {
-     const newOffset = (event.selected * itemsPerPage) % brands.length;
-     setItemOffset(newOffset);
-   };
-  
+  //Panginate
+  const [itemOffset, setItemOffset] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = brands
+    .filter((item) => item.status === 1)
+    .slice(itemOffset, endOffset);
+  const total = brands.filter((item) => item.status === 1);
+  const pageCount = Math.ceil(total.length / itemsPerPage);
+  // console.log(total);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % brands.length;
+    setItemOffset(newOffset);
+  };
+
+  const handleSubmitButtonDeleteAll = () => {
+    // setCheckButtonAll(!checkButtonAll);
+    setShowButtonDelete(false);
+  };
+  const handleSubmitButtonDelete = (id) => {
+    if (dataCheck === []) {
+      setDataCheck(id);
+    } else {
+      setDataCheck([...dataCheck, id]);
+    }
+    // console.log(dataCheck);
+    setShowButtonDelete(true);
+  };
   return (
     <div>
       <div className="w-full">
@@ -117,24 +134,27 @@ const HomeBrand = () => {
                     <div className="align-middle inline-block w-full shadow overflow-x-auto sm:rounded-lg border-b border-gray-200">
                       <table className="min-w-full">
                         <thead>
-                          <tr className="border-b border-gray-200 bg-white leading-4 tracking-wider text-base text-gray-900">
+                          <tr className="border-b border-gray-200 w-full bg-white leading-4 tracking-wider text-base text-gray-900">
                             <th
-                              className="px-6 py-5 text-left bg-white w-full"
+                              className="px-6 py-5  text-left bg-white w-full"
                               colSpan="12"
                             >
-                              <input
-                                className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                type="checkbox"
-                              />
+                              <div className="flex justify-between">
+                                <input
+                                  className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                  type="checkbox"
+                                  onClick={() => handleSubmitButtonDeleteAll()}
+                                />
+                                {showButtonDelete && (
+                                  <button className="bg-red-500 text-white px-4 py-2 rounded-lg ">
+                                    Xóa
+                                  </button>
+                                )}
+                              </div>
                             </th>
                           </tr>
                           <tr className="bg-gray-50 border-b border-gray-200 text-xs leading-4 text-gray-500 uppercase tracking-wider">
-                            <th className="px-6 py-3 text-left font-medium ">
-                              <input
-                                className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                                type="checkbox"
-                              />
-                            </th>
+                            <th className="px-6 py-3 text-left font-medium "></th>
                             <th className="px-6 py-3 text-left font-medium">
                               Name
                             </th>
@@ -168,6 +188,10 @@ const HomeBrand = () => {
                                       <input
                                         className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
                                         type="checkbox"
+                                        onClick={() =>
+                                          handleSubmitButtonDelete(items?.id)
+                                        }
+                                        // checked={checkButtonAll}
                                       />
                                     </td>
                                     <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -243,11 +267,11 @@ const HomeBrand = () => {
                 />
               </div>
               <div>
-              <Pagination
-                pageCount={pageCount}
-                handlePageClick={handlePageClick}
-              />
-            </div>
+                <Pagination
+                  pageCount={pageCount}
+                  handlePageClick={handlePageClick}
+                />
+              </div>
             </div>
           </div>
         </div>

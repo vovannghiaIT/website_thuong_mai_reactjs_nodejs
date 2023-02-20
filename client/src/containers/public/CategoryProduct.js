@@ -15,6 +15,8 @@ const CategoryProduct = () => {
   const { operas } = useSelector((state) => state.opera);
   const [searchParams, setSearchParams] = useSearchParams();
   const { products } = useSelector((state) => state.product);
+  const [sortUp, setsortUp] = useState();
+  const [sortDown, setsortDown] = useState();
 
   useEffect(() => {
     fetchData();
@@ -72,24 +74,23 @@ const CategoryProduct = () => {
   }
 
   const defaultValue = () => {
+    setsortDown();
+    setsortUp();
     setSearchParams();
   };
-  let sortPrice = [];
-  const priceUp = () => {
-    return (sortPrice = []
-      .concat(ProductCategory)
-      .sort((a, b) => (a.price > b.price ? 1 : -1)));
+
+  var ProductCategory = ProductItemCategory;
+
+  const priceUp = (ProductCategory) => {
+    setsortDown();
+    setsortUp(ProductCategory.sort((a, b) => a.price - b.price));
   };
 
-  let priceSortUp = [];
   const priceDown = () => {
-    let price = products
-      .filter((items) => items.status === 1)
-      .map((items) => items.price);
-    // let priceSort = price.sort(compareNumbersDown);
+    setsortUp();
+    setsortDown(ProductCategory.sort((a, b) => b.price - a.price));
   };
-  let ProductCategory = priceSortUp > 0 ? priceSortUp : ProductItemCategory;
-  console.log(sortPrice);
+
   return (
     <div className=" bg-[#f1f1f1] flex flex-col gap-5  w-full ">
       <div className="bg-white w-full ">
@@ -97,27 +98,32 @@ const CategoryProduct = () => {
           Trang chủ / sản phẩm theo loại
         </div>
       </div>
-      <div className=" w-[80%] mx-auto bg-white  rounded-lg flex justify-start items-start gap-4">
-        <div className="w-[30%] ">
-          <FilterProduct />
+      <div className=" w-[80%] sm:max-md:w-full mx-auto bg-white  rounded-lg flex justify-start items-start gap-4">
+        <div className="w-[30%] sm:max-md:hidden">
+          <FilterProduct setsortUp={setsortUp} setsortDown={setsortDown} />
         </div>
-        <div className="w-[70%] p-2 flex flex-col gap-5">
-          <div className="flex items-center justify-start gap-2">
-            <span>Sắp xếp theo</span>
+        <div className="w-[70%] sm:max-md:w-full p-2 flex flex-col gap-5">
+          <span className="text-start hidden text-[13px] md:max-lg:text-[10px]  sm:max-md:block">
+            Sắp xếp theo
+          </span>
+          <div className="grid grid-cols-5 sm:max-md:grid-cols-2 gap-2 sm:max-md:gap-1">
+            <span className="text-center text-[13px] md:max-lg:text-[10px] py-2 sm:max-md:hidden">
+              Sắp xếp theo
+            </span>
             <span onClick={() => defaultValue()}>
               <ButtonFilter text={"Mặc định"} />
             </span>
-            <span onClick={() => priceUp()}>
+            <span onClick={() => priceUp(ProductCategory)}>
               <ButtonFilter text={"Giá tăng dần"} />
             </span>
-            <span>
+            <span onClick={() => priceDown(ProductCategory)}>
               <ButtonFilter text={"Giá giảm dần"} />
             </span>
-            <span>
+            <span onClick={() => defaultValue()}>
               <ButtonFilter text={"Mới nhất"} />
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="gird w-full  grid-cols-2 gap-2">
             {CategoryId ? (
               <p className="flex gap-2">
                 <>
@@ -161,15 +167,14 @@ const CategoryProduct = () => {
               </div>
             )}
           </div>
-          <div className="flex justify-start items-start gap-4">
-            {ProductCategory?.length > 0 &&
-              ProductCategory?.map((items, index) => {
+          <div className="grid grid-cols-4 gap-2 md:max-lg:grid-cols-3 sm:max-md:grid-cols-2  xl:gap-4">
+            {!sortUp &&
+              sortDown?.length > 0 &&
+              sortDown?.map((items, index) => {
                 return (
                   <div key={index}>
                     <ItemsProduct
                       slug={items?.slug}
-                      width={183.5}
-                      height={250}
                       name={items?.name}
                       images={JSON.parse(items?.images)}
                       pricesale={items?.pricesale}
@@ -178,8 +183,39 @@ const CategoryProduct = () => {
                   </div>
                 );
               })}
-            {ProductCategory?.length <= 0 && <NoProduct />}
+            {!sortDown &&
+              sortUp?.length > 0 &&
+              sortUp?.map((items, index) => {
+                return (
+                  <div key={index}>
+                    <ItemsProduct
+                      slug={items?.slug}
+                      name={items?.name}
+                      images={JSON.parse(items?.images)}
+                      pricesale={items?.pricesale}
+                      price={items?.price}
+                    />
+                  </div>
+                );
+              })}
+            {!sortUp &&
+              !sortDown &&
+              ProductCategory?.length > 0 &&
+              ProductCategory?.map((items, index) => {
+                return (
+                  <div key={index}>
+                    <ItemsProduct
+                      slug={items?.slug}
+                      name={items?.name}
+                      images={JSON.parse(items?.images)}
+                      pricesale={items?.pricesale}
+                      price={items?.price}
+                    />
+                  </div>
+                );
+              })}
           </div>
+          {ProductCategory?.length <= 0 && <NoProduct />}
         </div>
       </div>
     </div>

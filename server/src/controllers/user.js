@@ -15,7 +15,7 @@ export const getCurrent = async (req, res) => {
 export const getUserAll = async (req, res) => {
   // const { id } = req.user;
   try {
-    const response = await services.getUserAllService(req.body);
+    const response = await services.getUserAllService();
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -24,10 +24,22 @@ export const getUserAll = async (req, res) => {
     });
   }
 };
-export const UpdateUser = async (req, res) => {
+export const UpdateUserNew = async (req, res) => {
   // const { id } = req.user;
   try {
-    const response = await services.updateUserService(req.body);
+    const response = await services.updateUserServiceNew(req.body);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({
+      err: -1,
+      msg: "Failed at user controller: " + error,
+    });
+  }
+};
+export const UpdateUserOld = async (req, res) => {
+  // const { id } = req.user;
+  try {
+    const response = await services.updateUserServiceOld(req.body);
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({

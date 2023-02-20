@@ -76,7 +76,7 @@ const Insert = ({ modal, setModal }) => {
 
   const handleFile = async (e) => {
     e.stopPropagation();
-    setLoading(true)
+    setLoading(true);
     const files = e.target.files;
     //biến imhg chứa link ảnh
     let images = [];
@@ -87,24 +87,31 @@ const Insert = ({ modal, setModal }) => {
         "upload_preset",
         process.env.REACT_APP_UPLOAD_ASSETS_NAME
       );
+
+      // console.log(formData);
       const response = await apiUploadImages(formData);
-      // console.log(response);
+
       if (response.status === 200) {
         images = [...images, response.data?.secure_url];
       }
-      setLoading(false)
-      setImagesPreview((prev) => [...prev, ...images]);
-      setPayload((prev) => ({
-        ...prev,
-        images: [...prev.images, ...images],
-      }));
+      // console.log(images);
+      setLoading(false);
+      // console.log([...imagesPreview, ...images]);
+      // setImagesPreview((prev) => [...prev, ...images]);
+      setImagesPreview([...imagesPreview, ...images]);
 
+      setPayload({
+        ...payload,
+        images: [...payload.images, ...images],
+      });
+      setLoading(false);
       // setPayload((prev) => ({
       //   ...prev,
       //   images: JSON.stringify([...payload.images, ...images]),
       // }));
     }
   };
+
   const handleDeleteImage = (image) => {
     setImagesPreview((prev) => prev?.filter((item) => item !== image));
     setPayload((prev) => ({
@@ -139,18 +146,18 @@ const Insert = ({ modal, setModal }) => {
       fetchDataProduct();
       setImagesPreview([]);
       setPayload({
-      name: "",
-      categoryId: "",
-      operaId: "",
-      brandId: "",
-      images: "",
-      star: 0,
-      slug: "",
-      description: "",
-      number: "",
-      price: "",
-      pricesale: 0,
-      status: 1,
+        name: "",
+        categoryId: "",
+        operaId: "",
+        brandId: "",
+        images: "",
+        star: 0,
+        slug: "",
+        description: "",
+        number: "",
+        price: "",
+        pricesale: 0,
+        status: 1,
       });
     }
   };
@@ -352,6 +359,7 @@ const Insert = ({ modal, setModal }) => {
                           id="images"
                           className="w-full bg-gray-100 p-2 mt-2"
                           onChange={handleFile}
+                          multiple
                         />
                       </>
                     )}
@@ -408,7 +416,7 @@ const Insert = ({ modal, setModal }) => {
                         }
                       </small>
                     )}
-
+                  <br />
                   <label>Giá</label>
                   <input
                     type="number"

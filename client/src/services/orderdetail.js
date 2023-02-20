@@ -13,3 +13,30 @@ export const apiInsertOrderDetails = (payload) =>
       reject(error);
     }
   });
+
+export const apiGetOrderDetail = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await axiosConfig({
+        method: "get",
+        url: "/api/v1/orderDetail/all",
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+export const apiDeleteOrderDetail = (payload) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await axiosConfig({
+        method: "delete",
+        url: "/api/v1/orderDetail/delete",
+        data: payload,
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });

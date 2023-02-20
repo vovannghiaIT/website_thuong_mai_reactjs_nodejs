@@ -27,12 +27,15 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       address: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       roles: {
         type: Sequelize.INTEGER,
       },
       status: {
+        type: Sequelize.INTEGER,
+      },
+      orders: {
         type: Sequelize.INTEGER,
       },
       avatar: {

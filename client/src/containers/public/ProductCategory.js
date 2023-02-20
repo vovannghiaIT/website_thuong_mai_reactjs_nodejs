@@ -61,9 +61,21 @@ const ProductCategory = ({ categoryId, productSlug }) => {
           rows: 1,
         }}
         breakpoints={{
-          769: {
+          1024: {
+            slidesPerView: 5,
+            slidesPerGroup: 5,
+          },
+          767: {
             slidesPerView: 4,
             slidesPerGroup: 4,
+          },
+          330: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+          318: {
+            slidesPerView: 1,
+            slidesPerGroup: 1,
           },
         }}
         scrollbar={true}
@@ -95,7 +107,6 @@ const ProductCategory = ({ categoryId, productSlug }) => {
                         onClick={() => feachDataDetail(items?.slug)}
                         sale
                         slug={items?.slug}
-                        width={183.5}
                         name={items?.name}
                         images={JSON.parse(items?.images)}
                         pricesale={items?.pricesale}

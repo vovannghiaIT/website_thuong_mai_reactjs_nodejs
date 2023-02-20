@@ -23,6 +23,30 @@ export const getProductService = () =>
       reject(error);
     }
   });
+//GET PRODUCT PAGINATE
+export const getProductLimitService = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Product.findAll({
+        raw: true,
+        nest: true,
+        limit: +5,
+        include: [
+          { model: db.Category, as: "categories" },
+          { model: db.Brand, as: "brands" },
+          { model: db.Opera, as: "operas" },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      resolve({
+        err: response ? 0 : 1,
+        msg: response ? "OK" : "Failed to get product service.",
+        response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 //GET Detail product with slug
 export const getProductDetailSlugService = (query) =>
   new Promise(async (resolve, reject) => {

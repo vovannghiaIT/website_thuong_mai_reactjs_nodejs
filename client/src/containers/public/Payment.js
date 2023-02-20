@@ -9,7 +9,11 @@ import { numberWithCommas } from "../../ultils/Common/formatVietnameseToString";
 import { path } from "../../ultils/constant";
 import icons from "../../ultils/icons";
 import * as actions from "../../store/actions";
-import { apiInsertOrderDetails, apiInsertOrders } from "../../services";
+import {
+  apiInsertOrderDetails,
+  apiInsertOrders,
+  apiUpdateUsersOld,
+} from "../../services";
 import { toast, ToastContainer } from "react-toastify";
 
 const Payment = () => {
@@ -71,7 +75,7 @@ const Payment = () => {
       deliveryname: currentData?.firstName + currentData?.lastName || "",
       deliveryphone: currentData?.phone || "",
       deliveryemail: currentData?.email || "",
-      value: "",
+      value: "không",
       status: 1,
     });
   }, [currentData]);
@@ -151,7 +155,8 @@ const Payment = () => {
     payloadOrder.code = code;
     let invalidsOrder = validate(payloadOrder);
 
-    if (dataCart === "") {
+    console.log(addressvalue);
+    if (dataCart === "" || !dataCart) {
       toast.warning("Bạn chưa có sản phẩm", {
         position: "top-right",
         autoClose: 1000,
@@ -162,7 +167,18 @@ const Payment = () => {
         theme: "light",
       });
     }
-    if (invalidsOrder === 0 && dataCart) {
+    if (invalidsOrder !== 0 || !dataCity || !IdDistricts || !idWard) {
+      toast.info("vui lòng điền đủ thông tin", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+    if (invalidsOrder === 0 && dataCart && dataCity && IdDistricts && idWard) {
       await apiInsertOrders(payloadOrder);
       for (let i = 0; i < dataCart.length; i++) {
         payloadDetail.name = dataCart[i]?.name;
@@ -172,7 +188,17 @@ const Payment = () => {
         payloadDetail.orderId = payloadOrder?.id;
         await apiInsertOrderDetails(payloadDetail);
       }
-      toast.success("Thanh toán thành công", {
+      let avatar = JSON.parse(currentData?.avatar);
+      let orders = currentData?.orders ? currentData?.orders + 1 : 1;
+      // console.log("currentData", currentData);
+      // console.log("orders", orders);
+      // console.log("avatar", avatar);
+      await apiUpdateUsersOld({
+        ...currentData,
+        avatar: avatar,
+        orders: orders,
+      });
+      toast.success("Đặt hàng thành công", {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -210,19 +236,19 @@ const Payment = () => {
   const indexs = [0];
   return (
     <div className="w-full">
-      <div className="w-[90%] mx-auto flex gap-2 ">
-        <div className="w-[70%] flex flex-col gap-2 p-4">
+      <div className="w-[90%] sm:max-md:w-full mx-auto flex sm:max-md:flex-col gap-2 ">
+        <div className="w-[70%] sm:max-md:w-full flex flex-col gap-2 p-4 sm:max-md:p-2">
           <div className="flex gap-2 text-[13px] text-blue-400 capitalize">
             Giỏ hàng / Thanh toán
           </div>
           <div className="font-semibold ">Thông tin nhận hàng</div>
-          <div className="flex flex-col gap-4 p-2">
+          <div className="flex flex-col gap-4 p-2 sm:max-md:w-full">
             <div className=" input-effect relative ">
               <input
                 id="email"
-                className={`effect-16 ${isActive.email ? "has-content" : ""}  ${
-                  payloadOrder.deliveryemail ? "has-content" : ""
-                }`}
+                className={`effect-16 w-full ${
+                  isActive.email ? "has-content " : ""
+                }  ${payloadOrder.deliveryemail ? "has-content" : ""}`}
                 type="text"
                 placeholder=""
                 value={payloadOrder.deliveryemail}
@@ -258,7 +284,9 @@ const Payment = () => {
             <div className=" input-effect relative">
               <input
                 id="name"
-                className={`effect-16 ${isActive.name ? "has-content" : ""} 
+                className={`effect-16 w-full ${
+                  isActive.name ? "has-content" : ""
+                } 
                 ${payloadOrder.deliveryname ? "has-content" : ""}`}
                 type="text"
                 placeholder=""
@@ -293,9 +321,9 @@ const Payment = () => {
             <div className=" input-effect relative">
               <input
                 id="phone"
-                className={`effect-16 ${isActive.phone ? "has-content" : ""} ${
-                  payloadOrder.deliveryphone ? "has-content" : ""
-                } `}
+                className={`effect-16 w-full ${
+                  isActive.phone ? "has-content" : ""
+                } ${payloadOrder.deliveryphone ? "has-content" : ""} `}
                 type="text"
                 placeholder=""
                 value={payloadOrder.deliveryphone}
@@ -330,7 +358,7 @@ const Payment = () => {
             <div className=" input-effect relative">
               <input
                 id="deliveryaddress"
-                className={`effect-16  has-content`}
+                className={`effect-16  has-content w-full`}
                 type="text"
                 placeholder=""
                 value={
@@ -437,7 +465,7 @@ const Payment = () => {
                 rows="3"
                 cols="50"
                 value={payloadOrder.value}
-                className={`effect-16 ${isActive.text ? "has-content" : ""} `}
+                className={`effect-16 has-content `}
                 onBlur={(e) => {
                   setIsActive((prev) => ({
                     ...prev,
@@ -484,12 +512,12 @@ const Payment = () => {
             </div>
           </div>
         </div>
-        <div className="w-[30%]">
-          <div className="p-5 border-b-2 text-center font-semibold text-[20px]">
+        <div className="w-[30%] sm:max-md:w-full ">
+          <div className="p-5 border-b-2 w-full md:max-lg:text-[13px] text-center font-semibold text-[20px]">
             Đơn hàng ({cookies?.Cart?.length > 0 ? cookies?.Cart?.length : 0}
             sản phẩm)
           </div>
-          <div className="p-2 border-b-2 ">
+          <div className="p-2 border-b-2 w-full md:max-lg:p-1">
             {dataCart?.length > 0 ? (
               <>
                 {dataCart?.map((items, index) => {

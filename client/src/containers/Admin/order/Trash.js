@@ -1,28 +1,30 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { ItemsImg } from "../../../components";
 import icons from "../../../ultils/icons";
 import * as actions from "../../../store/actions";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { apiDeleteUser, apiUpdateUsers } from "../../../services";
-import avatar from "../../../assets/avatar.png";
+import {
+  apiDeleteOrder,
+  apiDeleteOrderDetail,
+  apiUpdateOrder,
+} from "../../../services";
+
 const Trash = () => {
-  const { BiTrash, RiArrowGoBackFill } = icons;
+  const { RiArrowGoBackFill } = icons;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { users } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const { orderdetails } = useSelector((state) => state.orderdetail);
   useEffect(() => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    dispatch(actions.getUserAll());
+    dispatch(actions.getOrder());
   };
-
   const submitTranshStatus = (items) => {
-    // console.log(items);
     Swal.fire({
-      title: "Bạn muốn khôi phục? <br/>" + items?.firstName + items?.lastName,
+      title: "Bạn muốn khôi phục? <br/>" + items?.code,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -30,16 +32,25 @@ const Trash = () => {
       confirmButtonText: "vâng, chắc chắn rồi!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        Swal.fire("Khôi phục thành công!", "Bạn đã khôi phục.", "success");
-        let img = JSON.parse(items?.avatar);
-        await apiUpdateUsers({ ...items, avatar: img, status: 1 });
+        Swal.fire("khôi phục thành công!", "Bạn đã khôi phục.", "success");
+        await apiUpdateOrder({ ...items, status: 1 });
         fetchData();
       }
     });
   };
-  const submitDelete = async (items) => {
+
+  useEffect(() => {
+    fetchDataDetail();
+  }, []);
+
+  const fetchDataDetail = async () => {
+    dispatch(actions.getOrderDetail());
+  };
+
+  const submitDelete = (items) => {
+    let data = orderdetails?.filter((item) => item?.orderId === items?.id);
     Swal.fire({
-      title: "Bạn muốn xóa? <br/>" + items?.firstName + items?.lastName,
+      title: "Bạn muốn xóa? <br/>" + items?.code,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -48,8 +59,15 @@ const Trash = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Xóa thành công!", "", "success");
-        await apiDeleteUser({ ...items, id: items.id });
+        console.log({ ...items, id: items.id });
+        await apiDeleteOrder({ ...items, id: items.id });
+        for (let i = 0; i < data?.length; i++) {
+          let id = data[i].id;
+
+          await apiDeleteOrderDetail({ ...data[i], id: id });
+        }
         fetchData();
+        fetchDataDetail();
       }
     });
   };
@@ -107,12 +125,11 @@ const Trash = () => {
                               />
                             </th>
                             <th className="px-6 py-3 text-left font-medium">
-                              Name
+                              Mã đơn hàng
                             </th>
                             <th className="px-6 py-3 text-left font-medium">
-                              Images
+                              Người đặt hàng
                             </th>
-
                             <th className="px-6 py-3 text-left font-medium">
                               Status
                             </th>
@@ -128,8 +145,8 @@ const Trash = () => {
                         </thead>
 
                         <tbody className="bg-white">
-                          {users?.length > 0 &&
-                            users
+                          {orders?.length > 0 &&
+                            orders
                               .filter((item) => item.status === 0)
                               .map((items, index) => {
                                 return (
@@ -142,35 +159,35 @@ const Trash = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                       <div className="text-sm leading-5 text-gray-900">
-                                        {items?.firstName + items?.lastName}
-                                      </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                      <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10">
-                                          {items?.avatar &&
-                                          items?.avatar !== "0" ? (
-                                            <ItemsImg
-                                              images={JSON.parse(items?.avatar)}
-                                            />
-                                          ) : (
-                                            <img src={avatar} alt="avatar" />
-                                          )}
-                                        </div>
-                                        <div className="ml-4">
-                                          <div className="text-sm leading-5 font-medium text-gray-900"></div>
-                                        </div>
+                                        {items?.code}
                                       </div>
                                     </td>
 
-                                    <td className="px-4 text-center py-4 whitespace-no-wrap border-b border-gray-200">
-                                      <span className=" text-center inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {items.status === 1 && "success"}
-                                      </span>
-                                      <span className=" text-center inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        {items.status === 2 && "fail"}
-                                      </span>
-                                      <span className=" text-center inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                      <div className="text-sm leading-5 text-gray-900">
+                                        {items?.deliveryname}
+                                      </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                      {items.status === 1 && (
+                                        <span className="px-2  text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                          {items?.status === 1 &&
+                                            "đang chờ xác nhận"}
+                                        </span>
+                                      )}
+                                      {items?.status === 2 && (
+                                        <span className="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                          {items?.status === 2 &&
+                                            "đang giao hàng"}
+                                        </span>
+                                      )}
+                                      {items?.status === 3 && (
+                                        <span className="px-2  text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                          {items?.status === 3 &&
+                                            "giao thành công"}
+                                        </span>
+                                      )}
+                                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                         {items.status === 0 && "delete"}
                                       </span>
                                     </td>

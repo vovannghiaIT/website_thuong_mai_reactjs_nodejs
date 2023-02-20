@@ -8,16 +8,21 @@ const verifyToken = (req, res, next) => {
       msg: "Missing access token",
     });
 
-  jwt.verify(accessToken, process.env.SECRET_KEY, (err, user) => {
-    if (err)
-      return res.status(401).json({
-        err: 1,
-        msg: "Access token expired",
-      });
+  jwt.verify(
+    accessToken,
+    process.env.SECRET_KEY,
+    { session: false },
+    (err, user) => {
+      if (err)
+        return res.status(401).json({
+          err: 1,
+          msg: "Access token expired",
+        });
 
-    req.user = user;
-    next();
-  });
+      req.user = user;
+      next();
+    }
+  );
 };
 
 export default verifyToken;

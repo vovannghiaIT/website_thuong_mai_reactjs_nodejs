@@ -18,6 +18,8 @@ instance.interceptors.request.use(
       );
     // console.log(token);
     config.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
       authorization: `Bearer ${token}`,
     };
     return config;

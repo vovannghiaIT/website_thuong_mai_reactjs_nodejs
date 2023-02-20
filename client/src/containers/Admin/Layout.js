@@ -24,7 +24,7 @@ const Layout = () => {
   return (
     <>
       {isLoggedIn && currentData?.roles === 1 && (
-        <div className="w-full flex flex-wrap block">
+        <div className="w-full flex flex-wrap ">
           <div className="bg-[#263544] w-[20%] text-white overflow-auto h-screen">
             <Header />
           </div>

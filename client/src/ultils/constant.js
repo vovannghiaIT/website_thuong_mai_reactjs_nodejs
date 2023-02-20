@@ -1,6 +1,7 @@
 export const path = {
   HOME: "/*",
   INFO: "tai-khoan",
+  ORDERTRACK: "tai-khoan/theo-doi-don-hang",
   ADDRESS: "dia-chi",
   RESETPASSWORD: "mat-khau",
   LOGIN: "/login",
@@ -8,6 +9,7 @@ export const path = {
   CATEGORYPRODUCT: "category-product/:slug",
   SEARCH: "search",
   CATEGORYALL: "categoryAll",
+  PRODUCTALL: "productAll",
   PAY: "Cart/Pay",
   // admin
   ADMIN: "/admin/*",
@@ -16,11 +18,13 @@ export const path = {
   Brand: "/brand",
   Opera: "/opera",
   User: "/user",
+  Order: "/order",
   TRASHCATEGORY: "/category/trash",
   TRASHPRODUCT: "/product/trash",
   TRANSHBRAND: "/brand/trash",
   TRANSHOPERA: "/opera/trash",
   TRANSHUSER: "/user/trash",
+  TRASHORDER: "/order/trash",
   //client
   PRODUCTDETAIL: "productdetail/:slug",
 };

@@ -140,30 +140,50 @@ const Cart = () => {
   };
   const indexs = [0];
 
+  const handleSubmitDeleteCart = async () => {
+    if (cookies?.Cart) {
+      let cart = "";
+      for (let i = 0; i < dataCart.length; i++) {
+        cart = dataCart?.filter((items) => items?.id === dataCart[i]?.id);
+        let backNumber = cart[0]?.Cartnumber;
+        let img = cart[0]?.images;
+        // console.log({ ...cart[0], images: img, number: backNumber }); // api
+        await apiUpdateProducts({
+          ...cart[0],
+          images: img,
+          number: backNumber,
+        });
+      }
+      setCookie("Cart", "", { path: "/" });
+      setDataCart("");
+    }
+  };
   return (
     <div>
-      <div className="container mx-auto mt-2 w-full ">
-        <div className="flex shadow-md my-2">
-          <div className="w-3/4 bg-white px-10 py-2">
+      <div className=" mx-auto mt-2 w-full ">
+        <div className="flex  sm:max-md:flex-col shadow-md my-2">
+          <div className="w-3/4 md:max-lg:w-[80%] sm:max-md:w-full  sm:max-md:px-4 sm:max-md:py-2  bg-white px-10 py-2 md:max-lg:px-2">
             <div className="flex justify-between border-b pb-8">
-              <h1 className="font-semibold text-2xl">Giỏ hàng</h1>
-              <h2 className="font-semibold text-2xl">
+              <h1 className="font-semibold text-2xl  sm:max-md:text-[13px]">
+                Giỏ hàng
+              </h1>
+              <h2 className="font-semibold text-2xl  sm:max-md:text-[13px]">
                 {" "}
                 {cookies?.Cart?.length > 0 ? cookies?.Cart?.length : 0} sản phẩm
               </h2>
             </div>
             {dataCart?.length > 0 && (
-              <div className="flex mt-2 mb-5">
-                <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
-                  Thông tin sản phẩm
+              <div className="grid grid-cols-4 gap-4 mt-2 mb-5  -mx-8 px-6 md:max-lg:px-2 md:max-lg:mb-2 text-center">
+                <h3 className="font-semibold sm:max-md:text-[13px] text-gray-600 text-xs uppercase md:max-lg:text-[12px]">
+                  sản phẩm
                 </h3>
-                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
+                <h3 className="font-semibold sm:max-md:text-[13px] text-center text-gray-600 text-xs uppercase  md:max-lg:text-[13px] ">
                   Số lượng
                 </h3>
-                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">
+                <h3 className="font-semibold sm:max-md:text-[13px] text-center text-gray-600 text-xs uppercase md:max-lg:text-[13px]  ">
                   Giá
                 </h3>
-                <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
+                <h3 className="font-semibold sm:max-md:text-[13px] text-center text-gray-600 text-xs uppercase  md:max-lg:text-[13px] ">
                   Tổng
                 </h3>
               </div>
@@ -173,11 +193,11 @@ const Cart = () => {
               dataCart?.map((items, index) => {
                 return (
                   <div
-                    className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5"
+                    className="grid grid-cols-4  gap-4 items-center hover:bg-gray-100 lg:max-xl:py-2 -mx-8 px-6 py-5 "
                     key={index}
                   >
-                    <div className="flex w-2/5">
-                      <div className="w-20">
+                    <div className="flex  gap-2">
+                      <div className=" w-[50px]  sm:max-md:hidden ">
                         {items?.images?.length > 0 &&
                           items?.images
                             .filter((i, index) =>
@@ -187,27 +207,29 @@ const Cart = () => {
                               return (
                                 <img
                                   key={index}
-                                  className="object-cover h-24"
+                                  className="object-cover h-[50px] "
                                   src={i}
                                   alt="images cart"
                                 />
                               );
                             })}
                       </div>
-                      <div className="flex flex-col justify-between ml-4 flex-grow">
-                        <span className="font-bold text-sm">{items?.name}</span>
+                      <div className="flex flex-col gap-1 ">
+                        <span className="font-bold text-sm  sm:max-md:text-[10px]">
+                          {items?.name}
+                        </span>
                         <span className="text-red-500 text-xs">
                           {items?.brands}
                         </span>
                         <button
                           onClick={() => removeCartItem(items)}
-                          className="font-semibold hover:text-red-500 text-gray-500 text-xs text-start"
+                          className="font-semibold hover:text-red-500 text-gray-500 text-xs text-start  sm:max-md:text-[10px]"
                         >
                           Remove
                         </button>
                       </div>
                     </div>
-                    <div className="flex justify-center w-1/5">
+                    <div className="text-center sm:max-md:row-span-2  sm:max-md:col-span-1 overflow-hidden ">
                       <button onClick={() => NumberDown(items)} className="p-2">
                         <svg
                           className="fill-current text-gray-600 w-3"
@@ -244,16 +266,16 @@ const Cart = () => {
                         theme="light"
                       />
                     </div>
-                    <span className="text-center w-1/5 font-semibold text-sm">
+                    <span className="text-center  font-semibold text-sm">
                       {items?.price}
                     </span>
-                    <span className="text-center w-1/5 font-semibold text-sm">
+                    <span className="text-center font-semibold text-sm">
                       {numberWithCommas(items?.price * items?.number)}
                     </span>
                   </div>
                 );
               })}
-            {!dataCart && <NoProduct />}
+            {cookies?.Cart?.length <= 0 && <NoProduct />}
             <button
               onClick={() => backHome()}
               className="flex font-semibold text-indigo-600 text-sm mt-10"
@@ -268,7 +290,10 @@ const Cart = () => {
             </button>
           </div>
 
-          <div id="summary" className="w-1/4 px-2 py-10">
+          <div
+            id="summary"
+            className="w-1/4  sm:max-md:w-full  sm:max-md:py-2 px-2 py-10"
+          >
             <h1 className="font-semibold text-2xl border-b pb-8">
               {/* Order Summary */}
             </h1>
@@ -309,6 +334,12 @@ const Cart = () => {
                   Thanh Toán
                 </button>
               </Link>
+              <button
+                onClick={() => handleSubmitDeleteCart()}
+                className="mt-2 px-3 py-2 rounded-lg text-[16px] text-white bg-black hover:bg-slate-500 w-full"
+              >
+                Xóa tất cả
+              </button>
             </div>
           </div>
         </div>

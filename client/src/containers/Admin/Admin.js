@@ -9,6 +9,7 @@ import { HomeCategory, TrashCategory } from "./category";
 import { HomeBrand, TrashBrand } from "./brand";
 import { HomeOpera, TrashOpera } from "./opera";
 import { HomeUser, TrashUser } from "./user";
+import { HomeOrder, TrashOrder } from "./order";
 
 const Admin = () => {
   return (
@@ -21,11 +22,13 @@ const Admin = () => {
           <Route path={path.Brand} element={<HomeBrand />} />
           <Route path={path.Opera} element={<HomeOpera />} />
           <Route path={path.User} element={<HomeUser />} />
+          <Route path={path.Order} element={<HomeOrder />} />
           <Route path={path.TRASHCATEGORY} element={<TrashCategory />} />
           <Route path={path.TRASHPRODUCT} element={<TrashProduct />} />
           <Route path={path.TRANSHBRAND} element={<TrashBrand />} />
           <Route path={path.TRANSHOPERA} element={<TrashOpera />} />
           <Route path={path.TRANSHUSER} element={<TrashUser />} />
+          <Route path={path.TRASHORDER} element={<TrashOrder />} />
         </Route>
       </Routes>
     </>
